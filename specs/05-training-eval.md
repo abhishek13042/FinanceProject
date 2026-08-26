@@ -55,6 +55,12 @@ would measure a distribution shift, not the absence of signal.
 9. **R9 — Every metric carries the trading day it was earned on.** `StockWindowDataset` keeps
    `dates` and `syms` per sample, aligned with prediction order (val/test loaders never
    shuffle). Without that column neither R7 nor spec 06's beta gate is computable at all.
+10. **R10 — Windows are indexed, never materialised.** `StockWindowDataset` stores per-symbol
+    daily matrices and slices them in `__getitem__`. Materialising each window's text costs
+    `n_windows × 30 × 768` floats — **5.8 GB for the training split alone**, because
+    consecutive windows overlap in 29 of their 30 days and every copy is paid for in full.
+    The first real-data run died on exactly that allocation. Indexed, the whole panel's text
+    is **303 MB** and the three splits build in one second.
 
 ## Planned ablations
 
@@ -82,7 +88,9 @@ being exploited through a leak, not through signal.
 ## Acceptance criteria
 
 - [x] Loop runs end to end on synthetic data; loss decreases; early stopping fires.
-- [ ] Runs on real data without NaN.
+- [x] Runs on the real panel without NaN — all 17 price channels finite across
+      60,240 / 10,750 / 23,200 train/val/test windows.
+- [x] Memory fits a laptop: 303 MB of text, 7 MB of price features, one-second build.
 - [x] R6 and R7 implemented; all eight ablations construct, train and produce finite
       predictions (`scripts/smoke_eval.py`).
 - [x] Day-block intervals are wider than a row bootstrap on the same predictions — the
@@ -94,6 +102,13 @@ being exploited through a leak, not through signal.
 - [ ] Full model beats price-only **outside overlapping confidence intervals**.
 - [ ] Shuffled-text control lands at chance.
 - [ ] Test metrics written once, with intervals and seed count.
+
+## Cost, measured
+
+460 ms/step on this laptop's CPU at `batch_size` 16, 3,765 steps/epoch → **0.48 h/epoch**,
+so 20 epochs × 5 seeds is **48 CPU-hours per ablation** and the full eight-ablation matrix is
+384. That is why training goes to a GPU. `scripts/run_all.py` skips ablations already on
+disk, so a borrowed session can be resumed rather than restarted; see [HANDOFF.md](../HANDOFF.md).
 
 ## Honest expectation
 
