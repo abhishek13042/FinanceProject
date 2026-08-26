@@ -1,0 +1,60 @@
+# NIFTY-100 / Indian-market instantiation of the hierarchical-LLM + patch + co-attention model
+data:
+  universe_file: data/raw/universe50.csv     # cols: symbol, sector. Sector-stratified from NIFTY 100.
+  suffix: ".NS"                              # NSE via yfinance; use ".BO" for BSE
+  start: "2018-01-01"
+  end: "2025-12-31"
+  price_csv: data/interim/prices.csv
+  news_csv: data/raw/news.csv                # columns: symbol,timestamp,headline,body
+  summary_csv: data/interim/daily_summaries.csv
+  embed_npz: data/interim/daily_embeddings.npz
+  # chronological split (no look-ahead), same 62.5/12.5/25 proportions as the paper
+  train_end: "2022-12-31"   # 1,234 days = 62.5% of 1,975 (paper proportions; see spec 05 R1)
+  val_end:   "2023-12-31"
+  test_end:  "2025-12-31"
+  max_missing_frac: 0.05
+  ffill_max_gap: 3
+  sigma_clip: 3.0
+  dedup_ratio: 0.90
+  min_chars: 50
+
+market:                                       # India-specific
+  tz: "Asia/Kolkata"
+  session_start: "09:15"
+  session_end: "15:30"
+  hourly_buckets: 7                           # pre-open + 6 intraday + post-close bucket
+  circuit_pct: 20.0                           # NSE price band; clip returns beyond this
+
+summarizer:
+  model: "csebuetnlp/mT5_multilingual_XLSum"  # handles EN + Indic scripts
+  max_input_tokens: 512
+  max_summary_tokens: 84
+  daily_summary_tokens: 128
+  batch_size: 8
+  device: "cuda"
+
+model:
+  seq_len: 30            # L
+  patch_len: 10          # P
+  stride: 5              # S
+  d_model: 128
+  d_ff: 256
+  n_layers: 4
+  n_heads: 8
+  dropout: 0.2
+  activation: "gelu"
+  n_price_feats: 17      # 6 OHLCV-family + 11 technical indicators (paper Table 4)
+  text_dim: 768          # mT5-base encoder width
+  d_align: 17            # d_a: shared text/price alignment width. 17 == paper (Eq. 1).
+                         # Widen (32/64) to relieve the 768->17 squeeze; costs ~d_a/17x
+                         # encoder compute on BOTH streams. Ablation axis, see spec 05.
+
+train:
+  epochs: 20
+  batch_size: 16
+  lr: 1.0e-4
+  lr_decay: 1.0e-4
+  decay_every: 5
+  patience: 5
+  seed: 42
+  out_dir: artifacts
