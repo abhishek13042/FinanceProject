@@ -5,3 +5,4 @@ data/raw/*.csv
 data/interim/
 !data/raw/universe50.csv
 .venv/
+data/raw/*.txt

@@ -15,6 +15,7 @@ data:
   max_missing_frac: 0.05
   ffill_max_gap: 3
   sigma_clip: 3.0
+  filter_boilerplate: true   # drop administrative filings (see news_sources.BOILERPLATE)
   dedup_ratio: 0.90
   min_chars: 50
 

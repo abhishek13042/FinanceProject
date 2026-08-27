@@ -20,6 +20,7 @@ import numpy as np, pandas as pd, yaml
 sys.path.insert(0, ".")
 from src.summarize.hierarchical import (HierarchicalSummarizer, attribution_date,
                                         bucket_by_session, dedup)
+from src.data.news_sources import drop_boilerplate
 from src.summarize.runner import embed_texts, raw_variant, run_summarization
 
 
@@ -27,6 +28,9 @@ def load_news(cfg):
     """Corpus -> symbol, timestamp, text, date (attribution-corrected), bucket."""
     d = cfg["data"]
     news = pd.read_csv(d["news_csv"])
+    if d.get("filter_boilerplate", True):
+        # done before anything else so the GPU never sees a lost-certificate notice
+        news = drop_boilerplate(news, log=print)
     body = news["body"] if "body" in news.columns else pd.Series("", index=news.index)
     news["text"] = (news["headline"].fillna("") + ". " + body.fillna("")).str.strip()
     news["symbol"] = news["symbol"].astype(str).str.upper().apply(

@@ -16,7 +16,8 @@ model cache with you.
 |---|---|---|
 | the repo | ~1 MB | code, specs, configs |
 | `data/interim/prices.csv` | 38 MB | spec 01 output, already built |
-| `data/raw/news.csv` | *(spec 02 output)* | the summariser's input |
+| `data/raw/news.csv` | 18 MB | 61,791 BSE filings, 2018-2025 — the summariser's input |
+| `data/raw/bse_scrip_map.csv` | ~1 MB | symbol→scrip cache; only needed if you re-collect |
 | `~/.cache/huggingface/` | ~2.3 GB | mT5 weights — **copy this** rather than re-downloading on someone else's connection |
 
 Put the HF cache in the same place on the Legion, or point `HF_HOME` at wherever you put it.
@@ -48,6 +49,12 @@ GPU-hour estimate for the full backfill**. Read three things before committing t
   "no hierarchical summary" ablation meaningless, because both arms become the same thing
 - **the all-zero-row count** — stock-days whose text is empty
 
+The preflight prints a boilerplate line first: `dropped 26,008 of 61,791 (42.1%)`. That is
+expected — it is administrative paperwork (lost share certificates, trading-window notices).
+After it, text covers **23.4% of stock-days**, median 6 news days per 30-day window, 3.86% of
+windows entirely text-free. Set `data.filter_boilerplate: false` if you want the unfiltered
+arm, but do not expect the GPU hours back.
+
 ## 3. Summarise (spec 03)
 
 ```bash
@@ -70,8 +77,8 @@ anyway so both text variants come home in one trip.
 ## 4. Train (spec 05)
 
 ```bash
-python -m pytest tests/ -q          # 14 leakage guards, ~20 s — run them on the new machine too
-python scripts/run_all.py
+python -m pytest tests/ -q          # 24 guards, ~30 s — run them on the new machine too
+python scripts/run_all.py --only full,price_only,shuffled_text
 ```
 
 `run_all.py` runs 8 ablations x 5 seeds and **skips any ablation already on disk**, so
