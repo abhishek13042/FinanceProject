@@ -44,7 +44,7 @@ def _flush(rows: pd.DataFrame, path: str) -> None:
 def raw_variant(news: pd.DataFrame, max_chars: int = 2000) -> pd.DataFrame:
     """Ablation control: the same stock-days, but with headlines concatenated in
     chronological order instead of summarised. No LLM generation involved."""
-    g = (news.sort_values(["symbol", "date", "bucket", "timestamp"])
+    g = (news.sort_values(["symbol", "date", "timestamp"])   # chronological; see hierarchical.py
              .groupby(["symbol", "date"])["text"].apply(lambda s: " ".join(s)[:max_chars])
              .reset_index().rename(columns={"text": "summary"}))
     return g[["symbol", "date", "summary"]]
