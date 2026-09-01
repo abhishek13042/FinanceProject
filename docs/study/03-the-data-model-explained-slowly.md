@@ -14,9 +14,9 @@ Read after document 2. Time: 1–1.5 hours.
 |---|---|---|
 | Price download → clean → featurize | `data/interim/prices.csv` | **live, on disk, 39,055,211 bytes** |
 | Filing collection → boilerplate filter | `data/raw/news.csv` | **live, on disk, 18,479,415 bytes** |
-| Summarisation → embedding | `data/interim/daily_summaries.csv`, `daily_embeddings.npz` | **not yet produced** |
-| Windowing → training | in-memory (`StockWindowDataset`) | code-verified, not yet run on real embeddings |
-| Training → reporting | `artifacts/results_<tag>.json` | **not yet produced** |
+| Summarisation → embedding | `data/interim/daily_summaries.csv` (9,424 stock-days), embeddings | **executed** (Qwen2.5-1.5B-Instruct generation, mT5-encoder embedding — document 4 §5) |
+| Windowing → training | in-memory (`StockWindowDataset`) | **executed against real embeddings** |
+| Training → reporting | `artifacts/results_<tag>.json` (6 ablations × 5 seeds) | **executed** — document 4 covers the result |
 
 ### 1.1 `prices.csv` — one row per (symbol, date)
 
@@ -28,19 +28,21 @@ training-period statistics (document 2, decision 3/5); `close_raw` is the one co
 deliberately left unscaled (decision 4); `label` is the strict next-day-direction target,
 computed from `close_raw`, never from a z-scored column.
 
-**This is the contract behind the README's stale "d_p=5" claim** (document 1 trap 2). The
-README's own words: *"Price channels (d_p=5): close, log volume, return, high–low range,
-20-day MA gap."* The actual contract, confirmed three independent ways this session —
+**This is the contract behind a README claim that was stale earlier in this project's
+life and has since been corrected at the source.** The README once read *"Price channels
+(d_p=5): close, log volume, return, high–low range, 20-day MA gap"* — an early draft of
+the feature set, never updated after the design grew to 17 channels. It has since been
+fixed directly in `README.md` (as part of the same commit that ran the real training
+session, document 4). The contract itself, confirmed independently this session —
 
 ```bash
 grep -n "n_price_feats" configs/india.yaml        # n_price_feats: 17
 grep -n "FEATURE_COLS\s*=" -A3 src/data/prices.py  # OHLCV_COLS + TA_COLS, 6 + 11
 ```
 
-— is **17 channels**, matching spec 01 R5 ("Seventeen channels") exactly. The README's
-five-column list looks like an early draft of the feature set that was never updated
-after the design grew. This document is the canonical correction; if the README and the
-config/spec disagree again in the future, trust the config and spec.
+— is **17 channels**, matching spec 01 R5 ("Seventeen channels") exactly, and now also
+matching the README. The general lesson still holds for any *future* discrepancy: trust
+the config and spec over prose when they disagree.
 
 ### 1.2 `news.csv` — one row per filing, pre-boilerplate-filter
 
@@ -50,21 +52,25 @@ Columns: `symbol, timestamp, headline, source` (`source ∈ {bse, rss}`). Dedupl
 so the boilerplate rows are still inspectable here if a filtering-precision question ever
 comes up.
 
-### 1.3 `daily_summaries.csv` / `daily_embeddings.npz` — designed, not yet built
+### 1.3 `daily_summaries.csv` / embeddings — executed
 
-By contract (spec 03), the summary file will carry one row per `(symbol, attribution_
-date)` with the pass-2 summary text; the embedding file will carry one 768-d vector per
-same key, keyed for `O(1)` lookup by `StockWindowDataset.__init__` (document 2, decision
-16's `emb.get((sym, d), zero)`). Neither file exists on disk as of this session — this is
-the gap document 1 and document 4 both flag directly rather than paper over.
+By contract (spec 03), the summary file carries one row per `(symbol, attribution_date)`
+with the pass-2 summary text; the embedding store carries one 768-d vector per same key,
+keyed for `O(1)` lookup by `StockWindowDataset.__init__` (document 2, decision 16's
+`emb.get((sym, d), zero)`). This stage has now run: 9,424 stock-days summarised, using
+Qwen2.5-1.5B-Instruct for generation and the mT5 encoder for embedding — a mid-session
+model swap covered in full in document 4 §5, after the originally-planned mT5-only
+summariser was caught inventing content at the preflight gate.
 
-### 1.4 `results_<tag>.json` — the eventual output contract
+### 1.4 `results_<tag>.json` — executed
 
 By contract (`train.py::main`), one file per ablation tag, holding `test_mean_over_seeds`,
 `test_seed_averaged`, `ci_block_bootstrap_days`, `baseline_constant_up`, and
 `beta_contamination` — i.e., a number is never reported alone; the schema itself forces a
-baseline comparison and an interval alongside every metric. `artifacts/` is empty; no file
-matching this contract exists yet.
+baseline comparison and an interval alongside every metric. Six such files now exist in
+`artifacts/` (`results_full.json`, `results_price_only.json`, `results_shuffled_text.json`,
+`results_concat.json`, `results_oneway.json`, `results_raw_text.json`), plus
+`SESSION_REPORT.md` summarising all six. Document 4 covers what they contain.
 
 ## 2. The leakage-guard suite — `tests/test_leakage.py`, 14 guards
 
@@ -170,10 +176,12 @@ Being honest about the suite's own boundaries (spec 07's explicit scope section)
   passes every guard here.
 - It cannot enforce **G7** (test set touched exactly once) — that's a process discipline,
   not a checkable code invariant (document 2, decision 19).
-- It does not yet cover **summariser output quality** — because spec 03 has never run,
-  there is no real summary text yet to check for degeneracy (spec 03's own flagged risk:
-  an mT5 trained on news prose may produce near-boilerplate output when fed a compliance
-  filing).
+- It does not cover **summariser output quality** by automated test — that was checked
+  manually instead, at the preflight gate, on 8 real filings, and it caught exactly the
+  degeneracy risk spec 03 flagged: the originally-planned mT5 model invented facts rather
+  than summarising (2/8 correct company names). It was swapped for Qwen2.5-1.5B-Instruct
+  (8/8 correct) before any GPU time went into a full run — document 4 §5 has the story.
+  This class of defect still isn't something the automated guard suite checks for itself.
 
 ## Diagram — where each guard sits in the pipeline
 
@@ -182,7 +190,7 @@ prices.csv ──────► guards 3,4,5,6,14 (scaling, label, train_end-on
                           │
 news.csv → boilerplate → guards 8,9 (attribution, session ordering)
                           │
-     (summaries/embeddings — not yet produced)
+     (summaries/embeddings — executed, document 4 §5)
                           │
 StockWindowDataset ──────► guards 2,7,10,12,13 (window boundary, patch count,
                                                   zero-text gradients, text reaches output)
@@ -205,8 +213,9 @@ invisible to the in-memory fakes, and what made it visible in practice?
 
 **Level 3.** *"Your leakage tests all pass — doesn't that mean the pipeline is
 correct?"* Answer using §6: passing guards means no *known-checkable* leakage exists;
-it says nothing about model quality, cannot enforce the once-only test-touch discipline
-(G7), and — as of this session — can't yet check summariser output quality because that
-stage has never run on real data.
+it says nothing about model quality, and it cannot enforce the once-only test-touch
+discipline (G7) — that's a human process, not a code invariant. Summariser output quality
+also isn't something the automated suite checks; it was caught by manual inspection at
+the preflight gate instead (§6, document 4 §5).
 
 Next: [04-results-and-how-to-defend-them.md](04-results-and-how-to-defend-them.md).

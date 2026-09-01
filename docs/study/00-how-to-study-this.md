@@ -26,7 +26,7 @@ not know it — and survive their follow-up question.**
 | 1st | `01-concepts-from-zero.md` | Every term the codebase assumes — the paper's architecture, the statistical apparatus, and the India-specific pipeline, in dependency order |
 | 2nd | `02-one-request-explained-slowly.md` | One stock-day's journey end to end: raw price + news → windowed sample → prediction, traced through the real files |
 | 3rd | `03-the-data-model-explained-slowly.md` | The data contracts between every stage, the leakage-guard test suite, and a real bug this project's own tests caught |
-| 4th | `04-results-and-how-to-defend-them.md` | What has actually been run, what hasn't, the live-verified test result, and the statistical gates that decide whether any future number is reportable |
+| 4th | `04-results-and-how-to-defend-them.md` | The measured result (a null, at the constant-up floor), the three checks that rule out a broken pipeline, and the coverage caveat that narrows the claim |
 
 **Total: roughly 4–5.5 hours** for a thorough first pass.
 
@@ -41,12 +41,15 @@ mind: it exists because 98,700 rows of stock-day data are not 98,700 independent
 observations — stocks move together — and a project that doesn't account for that will
 report "significant" results that are actually noise.
 
-**The second thing:** as of this session, **the headline result does not exist yet.**
-Specs 01, 02 and 04 are built and executed. Spec 03 (the LLM summarisation stage) has
-never been run — it needs a GPU this project doesn't have on its own machine. Read
-[HANDOFF.md](../../HANDOFF.md) to understand why: it's a runbook written *for a borrowed
-GPU session*, not documentation of something already done. If asked "what's the accuracy,"
-the honest answer is "not measured yet" — say that plainly, per document 4.
+**The second thing:** the headline result is a **null**, and it's a real one. All eight
+specs have now run end to end on real data (a borrowed-GPU session, commit `0d40f8d`) —
+every ablation lands at the constant-up floor (~50.3% accuracy, MCC ≈ 0.01), verified by
+three independent checks (negative control at chance, a linear baseline matching the deep
+model, healthy training curves) rather than assumed. If asked "what's the accuracy," the
+honest answer is "no ablation beats the baseline, and here's why that's a defensible
+finding, not a missing one" — document 4 covers this in full, including the one caveat
+(real news text covered only 9.5% of stock-days, not the ~23% assumed at design time)
+that narrows the claim.
 
 ## 5. Four traps
 
@@ -55,14 +58,18 @@ the honest answer is "not measured yet" — say that plainly, per document 4.
 around it (`src/eval.py`, the eight specs) is at least as large and is the part that
 determines whether any result is defensible.
 
-**Trap 2 — reading the top-level `README.md` as fully current.** It's a good overview, but
-one number in it (price channel count, "d_p=5") is stale against the actual config and
-spec 01 (`n_price_feats: 17`) — document 3 §2 covers this directly. Trust the specs and the
-config over the README's prose summary when they disagree.
+**Trap 2 — reading numbers pre-registered before the real run as if they were the
+outcome.** `HANDOFF.md`'s original coverage estimate (23.4%) and the paper's 53–57%
+accuracy expectation were budgeting/hope figures, not measurements. The real run measured
+9.5% coverage and a null result — document 3 §1.1 covers the price-channel-count
+correction (`d_p=17`, now also fixed in the README itself), and document 4 covers the
+result correction in full.
 
-**Trap 3 — assuming "58 CPU-hours per ablation" means this has been run 8 times.** It
-hasn't. `HANDOFF.md`'s cost estimates are pre-registered budgeting for a session that, as
-of this document, has not yet happened. `artifacts/` is empty.
+**Trap 3 — assuming a null result means the pipeline didn't work.** It ran completely —
+6 ablations, 5 seeds each, 24/24 leakage guards passing on real data — and three
+independent checks (document 4 §3) rule out a broken pipeline as the explanation for the
+null. A working pipeline that finds no signal is a different, more defensible claim than
+"this was never tested."
 
 **Trap 4 — skipping the test files.** `tests/test_leakage.py` and `tests/test_resume.py`
 are not incidental — spec 07 exists specifically because "a leak also flatters" (its own
@@ -89,21 +96,24 @@ result, not a worse one, so nothing in a shipped number will look wrong on its o
 4. **The single most important correctness rule.** "News filed after the 15:30 IST close
    is attributed to the next trading session, not the same one — most BSE filings land
    after close, so getting this backwards would leak tomorrow's catalyst into today."
-5. **What's honestly not done yet.** "The LLM summarisation stage and every training run
-   depend on a GPU this project doesn't have locally — say that first, not last, if asked
-   for a result."
+5. **The result.** "A defensible null — every ablation lands at the constant-up floor,
+   confirmed by a negative control at chance and a linear baseline matching the deep
+   model, with one caveat: real news text covered only 9.5% of stock-days, so the
+   narrower honest claim is 'text didn't help where it existed,' not 'news doesn't
+   matter.'"
 
 ## 8. The whole project in one breath
 
 > Eight years of NSE price history (2018–2025, 50 sector-stratified names) and 61,791
-> timestamped BSE corporate filings get cleaned, session-bucketed, and — once a GPU
-> session runs it — summarised two-pass by a frozen multilingual LLM into one 768-d daily
-> embedding per stock-day → a 30-day window of 17 price channels and 30 daily text
-> embeddings gets aligned, patched, and fused by a small co-attention transformer into one
-> next-day-direction logit → and no number from that pipeline is reportable until it
-> clears five seeds, day-level block-bootstrap intervals, a shuffled-text negative control,
-> and a market-agreement split — because 50 correlated stocks over 1,974 days carry far
-> fewer independent observations than their row count suggests.
+> timestamped BSE corporate filings get cleaned, session-bucketed, and summarised two-pass
+> (Qwen2.5-1.5B-Instruct generation, mT5-encoder embedding) into one 768-d daily embedding
+> per stock-day → a 30-day window of 17 price channels and 30 daily text embeddings gets
+> aligned, patched, and fused by a small co-attention transformer into one next-day-
+> direction logit → run for real across six ablations and five seeds each, every one lands
+> at the constant-up floor (~50.3% accuracy, MCC ≈ 0.01) — a defensible null, checked
+> against a negative control, a linear baseline, and healthy training curves, narrowed by
+> one caveat: real news text covered only 9.5% of stock-days, far below the ~23% assumed
+> when the project was designed.
 
 ---
 
@@ -115,7 +125,9 @@ result validity rather than to produce the result itself.
 **Level 2.** Why does §4 say this project "inverts" the usual ML-repo priority order? What
 concretely is missing from `artifacts/` right now, and why?
 
-**Level 3.** *"So what's the model's accuracy?"* Answer using §4/§7.5 directly: no number
-exists yet — spec 03 (summarisation) has never been run because it needs a GPU this
-machine doesn't have; say what *is* built (specs 01, 02, 04) before saying what isn't, and
-name `HANDOFF.md` as the plan for closing that gap rather than a report of having done so.
+**Level 3.** *"So what's the model's accuracy?"* Answer using §4/§7.5 directly: every
+ablation lands at the constant-up floor (~50.3%, MCC ≈ 0.01) — a defensible null, verified
+by a negative control, a linear baseline, and healthy training curves rather than assumed
+— then name the one caveat that narrows the claim: real news text covered only 9.5% of
+stock-days, so the honest reading is "text didn't help where it existed," not "news
+doesn't matter for Indian equities."

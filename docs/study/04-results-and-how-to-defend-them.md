@@ -1,7 +1,13 @@
-# Study Guide 4 — What's actually been run, and what defends it
+# Study Guide 4 — The result, and how to defend it
 
-Documents 1–3 covered the design. This one covers **evidence**: what has genuinely been
-executed in this project, what hasn't, and how to answer questions about both honestly.
+Documents 1–3 covered the design. This one covers **evidence**: what was actually run,
+what it found, and how to talk about a null result honestly instead of apologetically.
+
+**This document was rewritten after the study set was first drafted.** The first draft
+said no trained-model result existed yet. Between that draft and this one, a teammate
+(Adarsh T U) ran the full spec 03→05 pipeline end to end on a borrowed RTX 4050 — commit
+`0d40f8d`, "Run spec 03->05 on real data" — and the result changes what this document
+needs to say. Read this version.
 
 Read after document 3. Time: 45–60 minutes.
 
@@ -9,157 +15,165 @@ Read after document 3. Time: 45–60 minutes.
 
 ## 1. The headline fact, stated first, not buried
 
-**There is no trained-model accuracy or MCC number in this project yet.** `artifacts/` is
-empty — zero `results_*.json` files. Spec 03 (LLM summarisation) has never been run
-because it needs a GPU this machine doesn't have; spec 05 (training) is fully built and
-tested on synthetic tensors but has never executed against real embeddings. Anyone asking
-"what's the accuracy" gets this answer first, not last, per document 1 §7.5.
+**The measured result is a null.** Every ablation lands at the constant-up floor
+(~50.3% accuracy, MCC ≈ 0.01), statistically indistinguishable from every other ablation
+and from a model that always predicts "up." This is a real, defensible finding — not a
+missing one — and the honest way to state it is exactly that plainly, not hedged.
 
-## 2. What HAS actually been run — live-verified this session
+## 2. The numbers — `artifacts/SESSION_REPORT.md`, run 2026-08-27/28
 
-```
-$ python -m pytest tests/ -q --no-header
-........................                                                 [100%]
-24 passed in 383.81s (0:06:23)
-```
+RTX 4050 Laptop (6 GB), 5 seeds per ablation, test window 2024–2025 (464 trading days,
+23,200 windows). Intervals block-bootstrapped over **trading days** (spec 05 R7, document
+1 §24), not stock-days.
 
-**24 passed, 0 failed, run twice independently this session with identical results.**
-This is the entire test suite: 14 leakage guards (`test_leakage.py`, document 3 §2) plus
-the news-resume suite (`test_resume.py`, document 3 §4). Both files use synthetic
-tensors, fakes, or stub models — this result verifies the pipeline's **logic and data
-contracts** are correct, not that any real accuracy number is good.
+| Ablation | Accuracy | MCC | MCC 95% CI | vs `full` (G3) |
+|---|---|---|---|---|
+| `full` | 50.31% ± 0.33 | 0.010 ± 0.007 | [-0.006, 0.035] | — |
+| `price_only` | 50.32% ± 0.56 | 0.010 ± 0.009 | [-0.013, 0.027] | noise |
+| `shuffled_text` | 50.14% ± 0.10 | 0.007 ± 0.003 | [-0.014, 0.027] | noise |
+| `concat` | 50.52% ± 0.45 | 0.013 ± 0.008 | [-0.004, 0.034] | noise |
+| `oneway` | 50.09% ± 0.31 | 0.009 ± 0.007 | [-0.013, 0.025] | noise |
+| `raw_text` | 50.25% ± 0.68 | 0.008 ± 0.012 | [-0.014, 0.023] | noise |
 
-**What is genuinely built and executed at full scale, confirmed by direct file
-inspection** (not by reading a spec's prose):
+**Constant-up floor: 50.45% accuracy, 0.000 MCC.** Under spec 06 G3 (document 3 §2, G3 —
+non-overlapping confidence intervals required for any comparison claim), none of these
+six numbers can be reported as beating any other. `layers2`, `align32`, `align64`
+(capacity-variant ablations) were not run before the 10-hour session deadline; the
+linear-baseline check below is why they were deprioritised rather than treated as
+missing evidence.
+
+## 3. Is this a null result or a broken pipeline? — three independent checks
+
+A null is only worth reporting if the pipeline can be shown to actually work. This is the
+question the leakage-guard suite (document 3) exists to let someone answer with evidence,
+not reassurance:
+
+1. **The negative control passes.** `shuffled_text`'s MCC CI is `[-0.014, 0.027]` —
+   contains zero, i.e. lands at chance. This is the correct outcome for G4 (document 3
+   §2); had it beaten chance, that would mean the text stream was leaking rather than
+   informing (document 2, decision 20's rationale, exercised for real here).
+2. **A linear baseline matches the deep model exactly.** Logistic regression on the same
+   17 price features, same split: 49.83% accuracy, 0.003 MCC — indistinguishable from the
+   4-layer patch transformer. The ceiling is in the *data*, not in model capacity. This is
+   also why the capacity-variant ablations (`layers2`, `align32`, `align64`) were skipped
+   — a linear model already matching the deep one is direct evidence more capacity was
+   not the bottleneck being tested.
+3. **Training is healthy.** Loss fell smoothly (0.721 → 0.690 across seeds), early
+   stopping fired at varied epochs (6–18) rather than collapsing immediately, no seed
+   collapsed to a constant prediction, and 24/24 leakage and resume guards (document 3)
+   pass on the real data used for this run.
+
+Together: this is a genuine absence of predictive signal under the conditions tested, not
+an artifact of a broken pipeline.
+
+## 4. The caveat that matters most — text coverage was much lower than assumed
+
+**Real text exists on only 9.5% of stock-days, not the 23.4% originally assumed** (the
+figure `HANDOFF.md` had carried before this run). The cause: BSE serves most Regulation 30
+filings as a category label plus a PDF attachment; `collect_news.py` captures the
+attachment's *name* but never fetches its content, so 60.2% of the post-boilerplate corpus
+had an empty body. One string — `"Announcement under Regulation 30 (LODR)-Press Release /
+Media Release. A."` — appeared **3,969 times**, and identical empty stubs produced
+identical *invented* summaries across unrelated stocks (see §5) — a constant injected into
+the text stream, not signal. These rows are now filtered (`min_body_chars: 30`).
+
+**This narrows the honest claim.** `full` tying `price_only` means *"text did not help on
+the 9.5% of stock-days where real text actually exists,"* not the broader "news doesn't
+predict Indian equities." The real repair — fetching the BSE PDF attachments
+`news_sources.py` already captures the name of but discards — would restore coverage
+toward the original 23.4% estimate with genuine text rather than stubs, and was out of
+scope for one borrowed GPU session (`SESSION_REPORT.md`'s own "honest limitation" section).
+
+## 5. A real incident that changed the pipeline mid-session — the summariser swap
+
+`mT5_multilingual_XLSum` (the summariser named throughout documents 1–3 as the India-
+appropriate multilingual choice) was **replaced mid-session** after the preflight gate
+(spec 03 R7, document 1) caught it inventing content rather than summarising it. Measured
+on 8 real filings: mT5 named the correct company **2/8**, rendering Axis Bank as "The Bank
+of England," ITC as "the British Stock Exchange," and misattributing a Cipla allotment to
+"the Financial Conduct Authority." Generation now uses **Qwen2.5-1.5B-Instruct**: 8/8
+correct, with accurate dates and share counts.
+
+**What did and didn't change downstream:** embeddings still come from the mT5 encoder
+(document 2 §B.4's pooling code, decision 13, is unaffected), so `text_dim` stays 768 and
+nothing past the summarisation stage moved — the two models are never resident on the GPU
+at once. A second fix landed alongside it: instruction prefixes were removed from the
+seq2seq prompts, because a fine-tuned summariser has never seen an instruction and treated
+the directive as just more article to summarise — measured grounding-in-source rose from
+13.4% (with the prefix) to 31.1% (without).
+
+This is exactly the kind of finding the preflight gate (spec 03 R7) exists to catch
+*before* GPU time is spent on a full run — and here it caught a real defect, not a
+hypothetical one, mid-session.
+
+## 6. What the on-disk evidence actually is
 
 | Stage | Evidence | Status |
 |---|---|---|
-| Price download/clean/featurize | `data/interim/prices.csv`, 39,055,211 bytes | **executed, full scale** |
-| News collection | `data/raw/news.csv`, 18,479,415 bytes; `bse_scrip_map.csv`; `universe50.csv`; `news.bse.done.txt` | **executed, full scale** |
-| Summarisation | `daily_summaries.csv`, `daily_embeddings.npz` | **not present — never run** |
-| Training | `artifacts/results_*.json` | **not present — never run** |
+| Price data | `data/interim/prices.csv` | executed, full scale |
+| News collection | `data/raw/news.csv` | executed, full scale |
+| Summarisation | `data/interim/daily_summaries.csv` (Qwen-generated), embeddings via mT5 encoder | **executed** — 9,424 stock-days summarised |
+| Training | `artifacts/results_{full,price_only,shuffled_text,concat,oneway,raw_text}.json`, `artifacts/SESSION_REPORT.md` | **executed** — 6 ablations × 5 seeds |
+| Leakage/resume tests | `pytest tests/` | **24 passed, 0 failed** (verified live this session, twice, before this run's commit was pulled in) |
 
-Specs 01 and 02's acceptance criteria (98,690 price rows across 50 symbols, up-share
-0.510; 61,791 raw filings, 38.1% stock-day coverage) describe numbers measured against
-these real files, not synthetic placeholders — this part of the pipeline is genuinely
-done, not aspirational.
+`layers2`, `align32`, `align64` remain unrun — the one honest gap left in the ablation
+matrix, deprioritised (not abandoned) once the linear-baseline check (§3.2) showed
+capacity wasn't the limiting factor being probed.
 
-## 3. Declared gaps — what this session did not verify
+## 7. Five hard questions and honest answers
 
-1. **No real model output exists.** Every architecture claim in document 1/2 (parameter
-   count, forward-pass shapes) is verified by the parameter-count guard and by code
-   reading, not by an actual training run producing real predictions.
-2. **`src/summarize/hierarchical.py`'s generation quality is unverified.** The prompts
-   and pooling logic were read in full, but no mT5 call has actually been made this
-   session — spec 03's own flagged risk (degenerate summaries on compliance filings) is
-   unresolved either way.
-3. **`src/data/news_sources.py` was read only partially** (~40 of 336 lines) — the header
-   constants and the `TATAMOTORS→TMCV` alias were confirmed, but the bulk of the BSE/RSS
-   fetch logic was not read line-by-line this session.
-4. **`scripts/build_prices.py`, `build_text.py`, `collect_news.py`, `run_all.py`,
-   `smoke_eval.py`, `smoke_test.py`, and `src/summarize/runner.py` were listed but not
-   opened this session** — their existence is confirmed, their contents are not.
-5. **The two documentation staleness gaps are corrections, not fixes** — the README
-   itself was not edited this session; document 3 §1.1 is the canonical correction to
-   read instead, but a reader going only to `README.md` will still see the stale d_p=5
-   and six-specs claims until someone updates that file.
+**Q1 — "So does the model beat the baseline?"**
+A: "No — every ablation, including the full model, sits within noise of the constant-up
+floor (50.3–50.5% accuracy, MCC ≈ 0.01). That's not a partial result; it's the finding."
 
-## 4. The statistical gates that will govern any future number — spec 06's G1–G8
+**Q2 — "Could this just be a bug?"**
+A: Use §3 — negative control at chance, linear baseline matching the deep model exactly,
+healthy training curves, 24/24 leakage guards passing. Three independent checks, not one,
+all consistent with "real absence of signal" rather than "broken pipeline."
 
-No accuracy figure from this pipeline is reportable on its own; it must clear these
-before being quoted as a result:
+**Q3 — "Why didn't the news help, when the paper claims it does?"**
+A: Use §4 — real text existed on only 9.5% of stock-days, not the ~23% assumed when the
+project was designed; most of the announced corpus was empty boilerplate stubs, now
+filtered out. The honest claim is narrower than "news doesn't predict Indian stocks" — it's
+"news didn't help on the fraction of days it was actually present and non-degenerate."
 
-| Gate | What it requires | Enforcement |
-|---|---|---|
-| G1 | ≥5 seeds, mean±std reported | code (`train.py --seeds`, `eval.py::across_seeds`) |
-| G2 | Day-level block bootstrap, never row-level | code (`eval.py::block_bootstrap`) |
-| G3 | Ablation comparisons need non-overlapping intervals | code (`eval.py::intervals_overlap`) |
-| G4 | Shuffled-text negative control must collapse to chance | code (`dataset.py::shuffle_text` + the `shuffled_text` ablation) |
-| G5 | Effective sample size (Kish) reported alongside nominal N | code, ties into §5 below |
-| G6 | Cross-sectional correlation ρ measured, not assumed zero | code (measured at 0.289 for the adopted universe) |
-| G7 | Test set touched exactly once, after model selection is final | **process only — not enforceable by code** (document 2, decision 19) |
-| G8 | Market-agreement / beta-contamination split reported | code (`eval.py::agreement_days`, `split_by_agreement`) |
+**Q4 — "Why change the summariser mid-project?"**
+A: Use §5 — the originally-planned mT5 model was caught inventing facts at the preflight
+gate (2/8 correct company names on real filings), and was swapped for one that scored 8/8
+before any GPU time went into a full run.
 
-The honest framing from spec 06 itself: the source paper is *not* methodologically naive
-— it does report mean±std over 10 seeds with paired t-tests. These gates are **stricter
-than the paper's**, specifically because the paper never discounts for cross-sectional
-correlation between the 50–500 stocks it evaluates jointly. This isn't "the paper did it
-wrong," it's "this project holds a higher bar on one specific dimension."
+**Q5 — "What would change this result?"**
+A: The real repair identified in `SESSION_REPORT.md`: fetch the BSE PDF attachments that
+`news_sources.py` already names but discards, which would raise real (non-stub) coverage
+back toward the original ~23% estimate. Until that's done, this null result describes a
+9.5%-coverage regime, not a full-coverage one.
 
-## 5. Why 98,700 rows isn't 98,700 observations
-
-Measured directly (spec 06): cross-sectional correlation **ρ = 0.289** on the adopted
-50-symbol sector-stratified universe. Feeding that into the Kish effective-sample-size
-formula, `n_eff = n/(1+(k-1)ρ)`, the number of *independent* observations saturates near
-**~6,000** almost regardless of how many stocks are added — going from 50 to 500 symbols
-(987,000 nominal rows) buys roughly 3.7% more effective information, because correlated
-stocks mostly repeat information the panel already has. The binding constraint is 1,974
-trading days of history, not stock count. This is *why* a 10x larger universe was
-rejected as not worth its extra cost (spec 06, document 1 §22).
-
-The consequence for interpreting any future accuracy number: with an effective test-
-window N on the order of ~1,000, the standard error on accuracy is roughly ±1.6%, giving
-roughly a ±3% 95% interval — beating the 51.3% constant-up baseline in a way that's
-*statistically* meaningful requires something in the neighbourhood of **54.5%+**, not
-merely "any number above 51.3%."
-
-## 6. Five hard questions and honest answers
-
-**Q1 — "So does the model work?"**
-A: "I can't say yet — it's never been trained on real data. What I can say: the data
-pipeline that would feed it is built and verified (98,690 real price rows, 61,791 real
-filings), the architecture is parameter-count-pinned and passes 24/24 tests on synthetic
-data, and the statistical gates that would decide whether any future number is
-meaningful are already implemented and tested."
-
-**Q2 — "Why hasn't it been trained yet?"**
-A: "Two stages need a GPU this machine doesn't have — the LLM summarisation pass and the
-actual training loop. `HANDOFF.md` is the runbook for borrowing one; it hasn't happened
-yet this session."
-
-**Q3 — "Isn't 98,700 rows already an unusually large dataset?"**
-A: Use §5 directly — nominal row count is misleading here because the panel is 50
-correlated stocks over a fixed history, not 98,700 independent draws; effective sample
-size saturates near 6,000 no matter how many more correlated stocks are added.
-
-**Q4 — "What happens if the shuffled-text control doesn't collapse to chance?"**
-A: "That's the signal that the text stream is being exploited through a data leak rather
-than through real signal — G4 exists specifically to catch that before any text-driven
-result gets reported as real."
-
-**Q5 — "How do I know the test set wasn't touched more than once?"**
-A: Answer honestly using document 2 decision 19 / G7 above: the code enforces
-select-on-validation/touch-test-once *within a single run*, but nothing stops re-running
-the whole script and keeping the best test result across runs — that's a discipline the
-people running it have to hold themselves to, not something the code can force.
-
-## 7. A five-minute cold pitch
+## 8. A five-minute cold pitch
 
 1. What it is (document 1 §7.1) — one sentence.
 2. The task (document 1 §7.2) — binary, no threshold.
-3. **Lead with what's honestly not done** (§1 above) — before the architecture, so
-   nobody thinks a real number is coming next.
-4. What IS live-verified — 24/24 tests, full-scale price and news data on disk.
-5. The one correctness rule worth naming cold — post-close news attribution
-   (document 1 §16, document 2 decision 11).
-6. Close with the statistical gates (§4) as the reason a future number, once it exists,
-   will actually be trustworthy — not just produced.
+3. **Lead with the result** — a defensible null: every ablation at the constant-up floor,
+   confirmed by three independent robustness checks (§3), not a missing result.
+4. The one caveat that narrows the claim — 9.5% real text coverage, not ~23% (§4).
+5. The one correctness rule worth naming cold — post-close news attribution (document 1
+   §16, document 2 decision 11) — still true, unaffected by this run.
+6. Close with what would change the finding — attachment-PDF fetching (§7 Q5).
 
 ---
 
 ## Self-test
 
-**Level 1.** What was the exact pytest result, and what does — and doesn't — it verify?
-Name the one gate (G-number) spec 06 says code alone cannot enforce.
+**Level 1.** State the six ablations' approximate accuracy range and the constant-up
+floor. Name the three checks used to rule out a broken pipeline.
 
-**Level 2.** Why does a ~6,000 effective-sample-size ceiling mean "beat the baseline by
-1%" isn't a meaningful claim, but "beat it by 4%" might be?
+**Level 2.** Why does "text existed on only 9.5% of stock-days" narrow the claim from
+"news doesn't predict Indian equities" to something more specific? What single defect did
+the preflight gate catch in the originally-planned summariser?
 
 **Level 3.** *"Just give me a number — did the retargeting to NSE data work or not?"*
-Answer using §1 and §6 Q1 together: state plainly that no number exists yet, name
-specifically why (GPU-dependent stages unrun), then pivot to what IS verified (pipeline
-correctness, full-scale real data, statistical gates already in place) rather than
-guessing at a number or apologizing for not having one.
+Answer using §1 and §7 Q1: yes, it produced a result — a defensible null, not "no data" —
+then immediately name the one caveat (§4) that keeps the finding from being read more
+broadly than the evidence supports.
 
 ---
 
