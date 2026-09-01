@@ -1,0 +1,57 @@
+data:
+  dedup_ratio: 0.9
+  embed_npz: data/interim/daily_embeddings_raw.npz
+  end: '2025-12-31'
+  ffill_max_gap: 3
+  filter_boilerplate: true
+  max_missing_frac: 0.05
+  min_body_chars: 30
+  min_chars: 50
+  news_csv: data/raw/news.csv
+  price_csv: data/interim/prices.csv
+  sigma_clip: 3.0
+  start: '2018-01-01'
+  suffix: .NS
+  summary_csv: data/interim/daily_summaries.csv
+  test_end: '2025-12-31'
+  train_end: '2022-12-31'
+  universe_file: data/raw/universe50.csv
+  val_end: '2023-12-31'
+market:
+  circuit_pct: 20.0
+  hourly_buckets: 7
+  session_end: '15:30'
+  session_start: 09:15
+  tz: Asia/Kolkata
+model:
+  activation: gelu
+  d_align: 17
+  d_ff: 256
+  d_model: 128
+  dropout: 0.2
+  n_heads: 8
+  n_layers: 4
+  n_price_feats: 17
+  patch_len: 10
+  seq_len: 30
+  stride: 5
+  text_dim: 768
+summarizer:
+  batch_size: 16
+  causal: true
+  daily_summary_tokens: 128
+  device: cuda
+  embed_max_tokens: 512
+  embed_model: csebuetnlp/mT5_multilingual_XLSum
+  max_input_tokens: 1024
+  max_summary_tokens: 84
+  model: Qwen/Qwen2.5-1.5B-Instruct
+train:
+  batch_size: 16
+  decay_every: 5
+  epochs: 20
+  lr: 0.0001
+  lr_decay: 0.0001
+  out_dir: artifacts
+  patience: 5
+  seed: 42

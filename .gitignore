@@ -1,11 +1,26 @@
 __pycache__/
 *.pyc
-artifacts/
-data/raw/*.csv
-data/interim/
-!data/raw/universe50.csv
 .venv/
+
+# Artifacts: keep the numbers, not the weights. The .pt checkpoints are ~147 MB and are
+# reproducible; results_*.json and the per-seed prediction caches carry every reported figure.
+artifacts/*
+!artifacts/results_*.json
+!artifacts/seed_*.npz
+!artifacts/SESSION_REPORT.md
+!artifacts/session.log
+
+# Interim data: keep the expensive outputs (1.5 GPU-hours of summaries), drop the embeddings
+# (~53 MB, regenerated from the summaries in ~10 min via `build_text.py embed`).
+data/interim/*
+!data/interim/prices.csv
+!data/interim/daily_summaries.csv
+!data/interim/daily_summaries_raw.csv
+
+data/raw/*.csv
 data/raw/*.txt
+!data/raw/universe50.csv
+!data/raw/news.csv
 
 # PDF build output (generated, not committed)
 build/pdf/

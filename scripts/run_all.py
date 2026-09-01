@@ -82,7 +82,9 @@ def main():
     todo = [t for t in (a.only.split(",") if a.only else ORDER)
             if a.force or not os.path.exists(os.path.join(out, f"results_{t}.json"))]
     seeds = [int(s) for s in a.seeds.split(",")]
-    print(f"matrix: {len(todo)} to run, {len(ORDER) - len(todo)} already on disk -> {todo}")
+    asked = a.only.split(",") if a.only else ORDER
+    print(f"matrix: {len(todo)} to run, {len(asked) - len(todo)} of {len(asked)} "
+          f"already on disk -> {todo}")
 
     t0 = time.time()
     for i, tag in enumerate(todo, 1):

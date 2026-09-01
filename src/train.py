@@ -64,7 +64,7 @@ def apply_ablation(splits, transform, seed):
     return out
 
 
-def run_seed(cfg, splits, seed, dev, log=print):
+def run_seed(cfg, splits, seed, dev, tag, log=print):
     torch.manual_seed(seed); np.random.seed(seed)
     t = cfg["train"]
     mk = lambda d, sh: DataLoader(d, batch_size=t["batch_size"], shuffle=sh, drop_last=sh)
@@ -74,7 +74,10 @@ def run_seed(cfg, splits, seed, dev, log=print):
     opt = torch.optim.Adam(model.parameters(), lr=t["lr"])
     sched = torch.optim.lr_scheduler.StepLR(opt, t["decay_every"], gamma=1 - t["lr_decay"])
     lossf = torch.nn.BCEWithLogitsLoss()
-    ckpt = os.path.join(t["out_dir"], "best_seed%d.pt" % seed)
+    # Tagged per ablation: a bare best_seed<N>.pt is shared by every ablation, so a run
+    # that never improves would silently load the PREVIOUS ablation's weights (identical
+    # shapes for full/price_only/shuffled_text) or die on a shape mismatch (align32/64).
+    ckpt = os.path.join(t["out_dir"], f"best_{tag}_seed{seed}.pt")
 
     best, bad = -1e9, 0
     for ep in range(1, t["epochs"] + 1):
@@ -90,7 +93,9 @@ def run_seed(cfg, splits, seed, dev, log=print):
         m = metrics(vy, vp)
         log(f"  seed {seed} epoch {ep:02d} loss {tot/max(len(dl_tr),1):.4f} "
             f"val_acc {m['acc']:.2f} val_mcc {m['mcc']:.3f}")
-        if m["mcc"] > best:                      # R2: model selection on validation MCC only
+        # `or not exists`: a degenerate first epoch (MCC nan) would otherwise leave no
+        # checkpoint at all and crash the load below after a full training run.
+        if m["mcc"] > best or not os.path.exists(ckpt):   # R2: selection on val MCC only
             best, bad = m["mcc"], 0
             torch.save(model.state_dict(), ckpt)
         else:
@@ -121,8 +126,19 @@ def main(cfg_path, ablation, seeds, n_boot, tag):
 
     per_seed, probs, t0 = [], [], time.time()
     for s in seeds:
-        ds = apply_ablation(splits, transform, s)
-        prob, y, val_mcc = run_seed(cfg, ds, s, dev)
+        # Seed-level resume. An ablation is 5 seeds x up to 20 epochs; without this, a crash
+        # on the last seed discards every earlier one. Test predictions are all that a seed
+        # contributes to the reported numbers, so caching them is equivalent to caching the
+        # run - and far smaller than the checkpoint. Cheap insurance on borrowed hardware.
+        cache = os.path.join(out, f"seed_{tag}_{s}.npz")
+        if os.path.exists(cache):
+            z = np.load(cache)
+            prob, y, val_mcc = z["prob"], z["y"], float(z["val_mcc"])
+            print(f"[{tag}] seed {s} restored from {cache}")
+        else:
+            ds = apply_ablation(splits, transform, s)
+            prob, y, val_mcc = run_seed(cfg, ds, s, dev, tag)
+            np.savez(cache, prob=prob, y=y, val_mcc=val_mcc)
         m = metrics(y, prob)
         m["val_mcc"] = val_mcc
         per_seed.append(m); probs.append(prob)

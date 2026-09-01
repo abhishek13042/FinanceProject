@@ -1,5 +1,21 @@
 # GPU session runbook (Legion)
 
+> **STATUS: EXECUTED 2026-08-27/28.** This runbook has been run to completion on an RTX 4050
+> Laptop (6 GB). Results are in [`README.md#results`](README.md#results) and
+> `artifacts/SESSION_REPORT.md`. It is kept here as the procedure, but **three of its numbers
+> were wrong and are corrected below** — do not quote them from the body text:
+>
+> | Stated below | Actual |
+> |---|---|
+> | text covers **23.4%** of stock-days | **9.5%** — the rest were empty attachment stubs |
+> | median 6 news days per 30-day window | recomputed after stub filtering; see spec 03 |
+> | expect **53–57%** acc, MCC 0.05–0.15 | measured **~50.3%**, MCC **0.010** (at the floor) |
+>
+> The boilerplate figure (`26,008 of 61,791`, 42.1%) **was** correct and reproduced exactly.
+> The summariser named in this document (mT5-XLSum) was replaced after it failed the
+> preflight sample check — it invented content rather than copying it, which the verbatim-copy
+> warning here does not catch. See README "What changed for India".
+
 Everything in this project that runs on a CPU has been run on the CPU. What is left needs a
 GPU, and the GPU is borrowed — so this document assumes limited, interruptible time on a
 machine that is not yours.

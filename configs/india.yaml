@@ -18,6 +18,8 @@ data:
   filter_boilerplate: true   # drop administrative filings (see news_sources.BOILERPLATE)
   dedup_ratio: 0.90
   min_chars: 50
+  min_body_chars: 30         # drop filings whose body is an empty attachment stub (60.2%
+                             # of post-boilerplate rows); see build_text.load_news
 
 market:                                       # India-specific
   tz: "Asia/Kolkata"
@@ -27,11 +29,21 @@ market:                                       # India-specific
   circuit_pct: 20.0                           # NSE price band; clip returns beyond this
 
 summarizer:
-  model: "csebuetnlp/mT5_multilingual_XLSum"  # handles EN + Indic scripts
-  max_input_tokens: 512
+  # Generation. mT5-XLSum (the original choice) is fine-tuned on BBC articles and substitutes
+  # entities it knows for ones it does not: on 8 real filings it named the correct company
+  # 2/8 and invented "Scottish Stock Exchange" / "Bank of England". Qwen2.5-1.5B-Instruct
+  # scored 8/8 with correct dates and amounts, at 3.2 GB and ~1.5 GPU-hours for the backfill.
+  model: "Qwen/Qwen2.5-1.5B-Instruct"
+  causal: true                                # decoder-only: chat template, left padding
+  # Embedding stays mT5, so x_e keeps d = 768 and nothing downstream moves. Never resident at
+  # the same time as the generator - see HierarchicalSummarizer._embedder.
+  embed_model: "csebuetnlp/mT5_multilingual_XLSum"
+  max_input_tokens: 1024
+  embed_max_tokens: 512
   max_summary_tokens: 84
   daily_summary_tokens: 128
-  batch_size: 8
+  batch_size: 16            # measured: 1.7 GPU-hrs at 4.24 GB peak of 6.4 (32 is 1.5 hrs
+                            # but 4.8+ GB; throughput only, does not affect the result)
   device: "cuda"
 
 model:

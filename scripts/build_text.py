@@ -24,18 +24,45 @@ from src.data.news_sources import drop_boilerplate
 from src.summarize.runner import embed_texts, raw_variant, run_summarization
 
 
+def _require(path, what):
+    """Fail at the top of a command, not 40 minutes into it."""
+    if not os.path.exists(path):
+        sys.exit(f"missing {what}: {path}")
+
+
 def load_news(cfg):
     """Corpus -> symbol, timestamp, text, date (attribution-corrected), bucket."""
     d = cfg["data"]
+    _require(d["news_csv"], "news corpus (scripts/collect_news.py)")
     news = pd.read_csv(d["news_csv"])
+    # Parsed here, once. Left as strings, every downstream sort_values("timestamp") is a
+    # lexicographic sort that only coincidentally matches time order.
+    news["timestamp"] = pd.to_datetime(news["timestamp"], utc=True, errors="coerce")
+    bad = int(news["timestamp"].isna().sum())
+    if bad:
+        print(f"dropping {bad:,} rows with unparseable timestamps")
+        news = news[news["timestamp"].notna()]
     if d.get("filter_boilerplate", True):
         # done before anything else so the GPU never sees a lost-certificate notice
         news = drop_boilerplate(news, log=print)
-    body = news["body"] if "body" in news.columns else pd.Series("", index=news.index)
-    news["text"] = (news["headline"].fillna("") + ". " + body.fillna("")).str.strip()
+    body = (news["body"] if "body" in news.columns else pd.Series("", index=news.index)).fillna("")
+    # BSE serves most Regulation 30 filings as a category label plus a PDF attachment that
+    # collect_news.py never fetches, so `body` is empty on ~60% of what survives the
+    # boilerplate filter. There is nothing in those rows to summarise, and mT5-XLSum
+    # confabulates when handed one - identical stubs yield identical invented summaries on
+    # thousands of unrelated stock-days, which is a constant injected into the text stream,
+    # not signal. Dropped here, and the cost to coverage is printed rather than buried.
+    minb = int(d.get("min_body_chars", 0))
+    if minb:
+        keep = body.str.strip().str.len() >= minb
+        print(f"empty-body filter: dropped {(~keep).sum():,} of {len(news):,} filings "
+              f"({(~keep).mean():.1%}) whose body is an attachment stub")
+        news, body = news[keep].copy(), body[keep]
+    news["text"] = (news["headline"].fillna("") + ". " + body).str.strip()
     news["symbol"] = news["symbol"].astype(str).str.upper().apply(
         lambda s: s if s.endswith((".NS", ".BO")) else s + d["suffix"])
 
+    _require(d["price_csv"], "price panel (scripts/build_prices.py)")
     prices = pd.read_csv(d["price_csv"], parse_dates=["date"])
     cal = pd.DatetimeIndex(sorted(prices["date"].unique()))
     # post-close news belongs to the NEXT session; this is the project's core no-look-ahead rule
@@ -62,7 +89,9 @@ def cmd_preflight(cfg, args):
     print(f"coverage: {cov:.1%} of stock-days carry news "
           f"(the rest resolve to the zero vector, spec 03 acceptance)")
 
-    sample = units.head(args.n)
+    # Random, not .head(): the first rows of the corpus are one symbol's earliest filings,
+    # and the whole session budget is booked off the s/stock-day this measures.
+    sample = units.sample(n=min(args.n, len(units)), random_state=0)
     sub = news.merge(sample, on=["symbol", "date"])
     print(f"\nloading {cfg['summarizer']['model']} ...")
     t0 = time.time()
@@ -112,6 +141,7 @@ def cmd_summarize(cfg, args):
 
 def cmd_embed(cfg, args):
     text_csv, npz = paths(cfg, args.raw)
+    _require(text_csv, "summaries (run `summarize` first)")
     hs = HierarchicalSummarizer(cfg)
     print(f"device={hs.dev}")
     embed_texts(hs, text_csv, npz)

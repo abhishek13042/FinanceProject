@@ -1,0 +1,630 @@
+[    0.0m] ========================================================================
+[    0.0m] session start | deadline 10.0h | python 3.12.10
+[    0.0m] --- summarize: scripts/build_text.py summarize configs/india.yaml --chunk 200
+boilerplate filter: dropped 26,008 of 61,791 filings (42.1%)
+empty-body filter: dropped 23,137 of 35,783 filings (64.7%) whose body is an attachment stub
+device=cuda
+stock-days: 9,424 total | 0 already done | 9,424 to do
+  chunk 1/48 -> 200 stock-days flushed (200/9,424)
+  chunk 2/48 -> 200 stock-days flushed (400/9,424)
+  chunk 3/48 -> 200 stock-days flushed (600/9,424)
+  chunk 4/48 -> 200 stock-days flushed (800/9,424)
+  chunk 5/48 -> 200 stock-days flushed (1,000/9,424)
+  chunk 6/48 -> 200 stock-days flushed (1,200/9,424)
+  chunk 7/48 -> 200 stock-days flushed (1,400/9,424)
+  chunk 8/48 -> 200 stock-days flushed (1,600/9,424)
+  chunk 9/48 -> 200 stock-days flushed (1,800/9,424)
+  chunk 10/48 -> 200 stock-days flushed (2,000/9,424)
+  chunk 11/48 -> 200 stock-days flushed (2,200/9,424)
+  chunk 12/48 -> 200 stock-days flushed (2,400/9,424)
+  chunk 13/48 -> 200 stock-days flushed (2,600/9,424)
+  chunk 14/48 -> 200 stock-days flushed (2,800/9,424)
+  chunk 15/48 -> 200 stock-days flushed (3,000/9,424)
+  chunk 16/48 -> 200 stock-days flushed (3,200/9,424)
+  chunk 17/48 -> 200 stock-days flushed (3,400/9,424)
+  chunk 18/48 -> 200 stock-days flushed (3,600/9,424)
+  chunk 19/48 -> 200 stock-days flushed (3,800/9,424)
+  chunk 20/48 -> 200 stock-days flushed (4,000/9,424)
+  chunk 21/48 -> 200 stock-days flushed (4,200/9,424)
+  chunk 22/48 -> 200 stock-days flushed (4,400/9,424)
+  chunk 23/48 -> 200 stock-days flushed (4,600/9,424)
+  chunk 24/48 -> 200 stock-days flushed (4,800/9,424)
+  chunk 25/48 -> 200 stock-days flushed (5,000/9,424)
+  chunk 26/48 -> 200 stock-days flushed (5,200/9,424)
+  chunk 27/48 -> 200 stock-days flushed (5,400/9,424)
+  chunk 28/48 -> 200 stock-days flushed (5,600/9,424)
+  chunk 29/48 -> 200 stock-days flushed (5,800/9,424)
+  chunk 30/48 -> 200 stock-days flushed (6,000/9,424)
+  chunk 31/48 -> 200 stock-days flushed (6,200/9,424)
+  chunk 32/48 -> 200 stock-days flushed (6,400/9,424)
+  chunk 33/48 -> 200 stock-days flushed (6,600/9,424)
+  chunk 34/48 -> 200 stock-days flushed (6,800/9,424)
+  chunk 35/48 -> 200 stock-days flushed (7,000/9,424)
+  chunk 36/48 -> 200 stock-days flushed (7,200/9,424)
+  chunk 37/48 -> 200 stock-days flushed (7,400/9,424)
+  chunk 38/48 -> 200 stock-days flushed (7,600/9,424)
+  chunk 39/48 -> 200 stock-days flushed (7,800/9,424)
+  chunk 40/48 -> 200 stock-days flushed (8,000/9,424)
+  chunk 41/48 -> 200 stock-days flushed (8,200/9,424)
+  chunk 42/48 -> 200 stock-days flushed (8,400/9,424)
+  chunk 43/48 -> 200 stock-days flushed (8,600/9,424)
+  chunk 44/48 -> 200 stock-days flushed (8,800/9,424)
+  chunk 45/48 -> 200 stock-days flushed (9,000/9,424)
+  chunk 46/48 -> 200 stock-days flushed (9,200/9,424)
+  chunk 47/48 -> 200 stock-days flushed (9,400/9,424)
+  chunk 48/48 -> 24 stock-days flushed (9,424/9,424)
+wrote data/interim/daily_summaries.csv: 9,424 stock-days
+[  141.0m]     OK: summarize
+[  141.0m]     |   chunk 44/48 -> 200 stock-days flushed (8,800/9,424)
+[  141.0m]     |   chunk 45/48 -> 200 stock-days flushed (9,000/9,424)
+[  141.0m]     |   chunk 46/48 -> 200 stock-days flushed (9,200/9,424)
+[  141.0m]     |   chunk 47/48 -> 200 stock-days flushed (9,400/9,424)
+[  141.0m]     |   chunk 48/48 -> 24 stock-days flushed (9,424/9,424)
+[  141.0m]     | wrote data/interim/daily_summaries.csv: 9,424 stock-days
+[  141.0m] --- summarize --raw: scripts/build_text.py summarize configs/india.yaml --raw
+boilerplate filter: dropped 26,008 of 61,791 filings (42.1%)
+empty-body filter: dropped 23,137 of 35,783 filings (64.7%) whose body is an attachment stub
+wrote data/interim/daily_summaries_raw.csv: 9,424 stock-days (raw headlines, no generation)
+[  142.7m]     OK: summarize --raw
+[  142.7m]     | boilerplate filter: dropped 26,008 of 61,791 filings (42.1%)
+[  142.7m]     | empty-body filter: dropped 23,137 of 35,783 filings (64.7%) whose body is an attachment stub
+[  142.7m]     | wrote data/interim/daily_summaries_raw.csv: 9,424 stock-days (raw headlines, no generation)
+[  142.7m] --- embed: scripts/build_text.py embed configs/india.yaml
+device=cuda
+wrote data/interim/daily_embeddings.npz: (9424, 768)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+Loading weights:   0%|          | 0/284 [00:00<?, ?it/s]
+Loading weights: 100%|â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ| 284/284 [00:00<00:00, 47336.76it/s]
+[transformers] The tied weights mapping and config for this model specifies to tie shared.weight to lm_head.weight, but both are present in the checkpoints with different values, so we will NOT tie them. You should update the config with `tie_word_embeddings=False` to silence this warning.
+[  143.4m]     OK: embed
+[  143.4m]     | device=cuda
+[  143.4m]     | wrote data/interim/daily_embeddings.npz: (9424, 768)
+[  143.4m] --- embed --raw: scripts/build_text.py embed configs/india.yaml --raw
+device=cuda
+wrote data/interim/daily_embeddings_raw.npz: (9424, 768)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+Loading weights:   0%|          | 0/284 [00:00<?, ?it/s]
+Loading weights: 100%|â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ| 284/284 [00:00<00:00, 32724.79it/s]
+[transformers] The tied weights mapping and config for this model specifies to tie shared.weight to lm_head.weight, but both are present in the checkpoints with different values, so we will NOT tie them. You should update the config with `tie_word_embeddings=False` to silence this warning.
+[  148.0m]     OK: embed --raw
+[  148.0m]     | device=cuda
+[  148.0m]     | wrote data/interim/daily_embeddings_raw.npz: (9424, 768)
+[  148.0m] --- guards: -m pytest tests/ -q
+........................                                                 [100%]
+24 passed in 15.99s
+[  148.3m]     OK: guards
+[  148.3m]     | ........................                                                 [100%]
+[  148.3m]     | 24 passed in 15.99s
+[  148.3m] --- train full: scripts/run_all.py --config configs/india.yaml --only full
+matrix: 1 to run, 0 of 1 already on disk -> ['full']
+
+=== [1/1] full === (0 min elapsed)
+[full] device=cuda overrides=- transform=- | train/val/test windows [60240, 10750, 23200]
+  seed 42 epoch 01 loss 0.7209 val_acc 53.54 val_mcc 0.014
+  seed 42 epoch 02 loss 0.7049 val_acc 54.37 val_mcc -0.000
+  seed 42 epoch 03 loss 0.7009 val_acc 50.90 val_mcc 0.024
+  seed 42 epoch 04 loss 0.6987 val_acc 52.04 val_mcc 0.030
+  seed 42 epoch 05 loss 0.6983 val_acc 53.88 val_mcc 0.010
+  seed 42 epoch 06 loss 0.6968 val_acc 47.43 val_mcc 0.019
+  seed 42 epoch 07 loss 0.6956 val_acc 53.34 val_mcc 0.038
+  seed 42 epoch 08 loss 0.6945 val_acc 52.98 val_mcc 0.031
+  seed 42 epoch 09 loss 0.6922 val_acc 47.42 val_mcc 0.026
+  seed 42 epoch 10 loss 0.6917 val_acc 52.10 val_mcc 0.028
+  seed 42 epoch 11 loss 0.6900 val_acc 51.55 val_mcc 0.038
+  seed 42 epoch 12 loss 0.6896 val_acc 52.06 val_mcc 0.030
+  seed 42 early stop at epoch 12
+[full] seed 42 TEST acc 50.45 mcc 0.012 f1 0.425
+  seed 43 epoch 01 loss 0.7199 val_acc 53.89 val_mcc 0.024
+  seed 43 epoch 02 loss 0.7033 val_acc 53.08 val_mcc 0.025
+  seed 43 epoch 03 loss 0.7015 val_acc 49.93 val_mcc 0.024
+  seed 43 epoch 04 loss 0.6994 val_acc 45.78 val_mcc -0.002
+  seed 43 epoch 05 loss 0.6975 val_acc 53.87 val_mcc -0.009
+  seed 43 epoch 06 loss 0.6954 val_acc 53.72 val_mcc 0.007
+  seed 43 epoch 07 loss 0.6946 val_acc 46.30 val_mcc 0.003
+  seed 43 early stop at epoch 7
+[full] seed 43 TEST acc 50.45 mcc 0.009 f1 0.505
+  seed 44 epoch 01 loss 0.7233 val_acc 54.41 val_mcc 0.000
+  seed 44 epoch 02 loss 0.7044 val_acc 50.96 val_mcc 0.022
+  seed 44 epoch 03 loss 0.7005 val_acc 53.98 val_mcc 0.027
+  seed 44 epoch 04 loss 0.6981 val_acc 54.05 val_mcc 0.025
+  seed 44 epoch 05 loss 0.6968 val_acc 51.74 val_mcc 0.034
+  seed 44 epoch 06 loss 0.6956 val_acc 53.07 val_mcc 0.026
+  seed 44 epoch 07 loss 0.6950 val_acc 54.53 val_mcc 0.022
+  seed 44 epoch 08 loss 0.6931 val_acc 53.44 val_mcc 0.016
+  seed 44 epoch 09 loss 0.6923 val_acc 51.83 val_mcc 0.040
+  seed 44 epoch 10 loss 0.6910 val_acc 52.20 val_mcc 0.032
+  seed 44 epoch 11 loss 0.6897 val_acc 51.73 val_mcc 0.045
+  seed 44 epoch 12 loss 0.6888 val_acc 51.34 val_mcc 0.030
+  seed 44 epoch 13 loss 0.6882 val_acc 50.37 val_mcc 0.040
+  seed 44 epoch 14 loss 0.6875 val_acc 52.66 val_mcc 0.034
+  seed 44 epoch 15 loss 0.6866 val_acc 51.49 val_mcc 0.036
+  seed 44 epoch 16 loss 0.6860 val_acc 49.60 val_mcc 0.030
+  seed 44 early stop at epoch 16
+[full] seed 44 TEST acc 50.72 mcc 0.020 f1 0.386
+  seed 45 epoch 01 loss 0.7197 val_acc 48.66 val_mcc 0.023
+  seed 45 epoch 02 loss 0.7072 val_acc 50.73 val_mcc 0.037
+  seed 45 epoch 03 loss 0.7007 val_acc 48.09 val_mcc 0.024
+  seed 45 epoch 04 loss 0.6982 val_acc 54.21 val_mcc 0.043
+  seed 45 epoch 05 loss 0.6976 val_acc 45.84 val_mcc 0.012
+  seed 45 epoch 06 loss 0.6958 val_acc 54.43 val_mcc 0.020
+  seed 45 epoch 07 loss 0.6945 val_acc 49.32 val_mcc 0.032
+  seed 45 epoch 08 loss 0.6932 val_acc 49.24 val_mcc 0.026
+  seed 45 epoch 09 loss 0.6925 val_acc 49.82 val_mcc 0.030
+  seed 45 early stop at epoch 9
+[full] seed 45 TEST acc 49.93 mcc -0.001 f1 0.481
+  seed 46 epoch 01 loss 0.7192 val_acc 54.41 val_mcc 0.003
+  seed 46 epoch 02 loss 0.7032 val_acc 51.11 val_mcc 0.023
+  seed 46 epoch 03 loss 0.7003 val_acc 49.05 val_mcc 0.029
+  seed 46 epoch 04 loss 0.6989 val_acc 54.07 val_mcc 0.021
+  seed 46 epoch 05 loss 0.6978 val_acc 47.88 val_mcc 0.026
+  seed 46 epoch 06 loss 0.6958 val_acc 50.41 val_mcc 0.031
+  seed 46 epoch 07 loss 0.6953 val_acc 53.53 val_mcc 0.023
+  seed 46 epoch 08 loss 0.6928 val_acc 51.92 val_mcc 0.027
+  seed 46 epoch 09 loss 0.6925 val_acc 49.75 val_mcc 0.028
+  seed 46 epoch 10 loss 0.6904 val_acc 53.44 val_mcc 0.030
+  seed 46 epoch 11 loss 0.6894 val_acc 49.83 val_mcc 0.024
+  seed 46 early stop at epoch 11
+[full] seed 46 TEST acc 50.00 mcc 0.008 f1 0.267
+
+[full] acc 50.31 +/- 0.33 (95% CI 49.34-51.67)
+[full] mcc 0.010 +/- 0.007 (95% CI -0.006-0.035)
+[full] constant-up floor: acc 50.45
+[full] beta gate: mcc 0.030 on agreement days vs 0.008 elsewhere (gap +0.022)
+[full] wrote artifacts/results_full.json
+
+ablation                    acc                mcc         95% CI (mcc)  beta gap
+----------------------------------------------------------------------------------
+full              50.31 +/- 0.33     0.010 +/- 0.007    -0.006 to 0.035   +0.022
+
+constant-up floor: 50.45% acc, 0.000 mcc (spec 05 R5)
+
+G3 - is the difference from `full` reportable?
+[  222.5m]     OK: train full
+[  222.5m]     | ----------------------------------------------------------------------------------
+[  222.5m]     | full              50.31 +/- 0.33     0.010 +/- 0.007    -0.006 to 0.035   +0.022
+[  222.5m]     | 
+[  222.5m]     | constant-up floor: 50.45% acc, 0.000 mcc (spec 05 R5)
+[  222.5m]     | 
+[  222.5m]     | G3 - is the difference from `full` reportable?
+[  222.5m] --- train price_only: scripts/run_all.py --config configs/india.yaml --only price_only
+matrix: 1 to run, 0 of 1 already on disk -> ['price_only']
+
+=== [1/1] price_only === (0 min elapsed)
+[price_only] device=cuda overrides=- transform=zero_text | train/val/test windows [60240, 10750, 23200]
+  seed 42 epoch 01 loss 0.7209 val_acc 53.57 val_mcc 0.015
+  seed 42 epoch 02 loss 0.7049 val_acc 54.39 val_mcc 0.003
+  seed 42 epoch 03 loss 0.7010 val_acc 50.79 val_mcc 0.022
+  seed 42 epoch 04 loss 0.6987 val_acc 52.26 val_mcc 0.029
+  seed 42 epoch 05 loss 0.6983 val_acc 53.69 val_mcc -0.001
+  seed 42 epoch 06 loss 0.6968 val_acc 47.47 val_mcc 0.017
+  seed 42 epoch 07 loss 0.6956 val_acc 53.53 val_mcc 0.038
+  seed 42 epoch 08 loss 0.6942 val_acc 53.15 val_mcc 0.026
+  seed 42 epoch 09 loss 0.6922 val_acc 47.84 val_mcc 0.027
+  seed 42 epoch 10 loss 0.6914 val_acc 51.83 val_mcc 0.034
+  seed 42 epoch 11 loss 0.6896 val_acc 51.39 val_mcc 0.040
+  seed 42 epoch 12 loss 0.6896 val_acc 52.66 val_mcc 0.036
+  seed 42 epoch 13 loss 0.6876 val_acc 51.72 val_mcc 0.043
+  seed 42 epoch 14 loss 0.6866 val_acc 53.22 val_mcc 0.020
+  seed 42 epoch 15 loss 0.6857 val_acc 52.81 val_mcc 0.034
+  seed 42 epoch 16 loss 0.6841 val_acc 52.24 val_mcc 0.043
+  seed 42 epoch 17 loss 0.6837 val_acc 53.52 val_mcc 0.035
+  seed 42 epoch 18 loss 0.6824 val_acc 50.45 val_mcc 0.037
+  seed 42 epoch 19 loss 0.6813 val_acc 51.29 val_mcc 0.037
+  seed 42 epoch 20 loss 0.6807 val_acc 51.83 val_mcc 0.028
+[price_only] seed 42 TEST acc 50.41 mcc 0.013 f1 0.383
+  seed 43 epoch 01 loss 0.7200 val_acc 53.93 val_mcc 0.025
+  seed 43 epoch 02 loss 0.7033 val_acc 53.10 val_mcc 0.026
+  seed 43 epoch 03 loss 0.7015 val_acc 50.07 val_mcc 0.026
+  seed 43 epoch 04 loss 0.6994 val_acc 45.96 val_mcc -0.000
+  seed 43 epoch 05 loss 0.6975 val_acc 54.02 val_mcc -0.000
+  seed 43 epoch 06 loss 0.6953 val_acc 53.43 val_mcc 0.013
+  seed 43 epoch 07 loss 0.6946 val_acc 46.60 val_mcc 0.011
+  seed 43 epoch 08 loss 0.6936 val_acc 49.37 val_mcc 0.028
+  seed 43 epoch 09 loss 0.6922 val_acc 52.73 val_mcc 0.032
+  seed 43 epoch 10 loss 0.6910 val_acc 49.16 val_mcc 0.030
+  seed 43 epoch 11 loss 0.6898 val_acc 50.52 val_mcc 0.038
+  seed 43 epoch 12 loss 0.6890 val_acc 52.33 val_mcc 0.046
+  seed 43 epoch 13 loss 0.6870 val_acc 51.53 val_mcc 0.027
+  seed 43 epoch 14 loss 0.6864 val_acc 51.70 val_mcc 0.042
+  seed 43 epoch 15 loss 0.6858 val_acc 53.69 val_mcc 0.040
+  seed 43 epoch 16 loss 0.6842 val_acc 51.48 val_mcc 0.026
+  seed 43 epoch 17 loss 0.6841 val_acc 52.20 val_mcc 0.039
+  seed 43 early stop at epoch 17
+[price_only] seed 43 TEST acc 50.55 mcc 0.014 f1 0.437
+  seed 44 epoch 01 loss 0.7233 val_acc 54.41 val_mcc 0.000
+  seed 44 epoch 02 loss 0.7044 val_acc 51.24 val_mcc 0.028
+  seed 44 epoch 03 loss 0.7005 val_acc 54.07 val_mcc 0.030
+  seed 44 epoch 04 loss 0.6981 val_acc 53.88 val_mcc 0.019
+  seed 44 epoch 05 loss 0.6969 val_acc 50.76 val_mcc 0.027
+  seed 44 epoch 06 loss 0.6954 val_acc 52.90 val_mcc 0.020
+  seed 44 epoch 07 loss 0.6949 val_acc 54.33 val_mcc 0.004
+  seed 44 epoch 08 loss 0.6933 val_acc 53.33 val_mcc 0.021
+  seed 44 early stop at epoch 8
+[price_only] seed 44 TEST acc 51.08 mcc 0.021 f1 0.525
+  seed 45 epoch 01 loss 0.7197 val_acc 48.77 val_mcc 0.025
+  seed 45 epoch 02 loss 0.7072 val_acc 50.77 val_mcc 0.038
+  seed 45 epoch 03 loss 0.7007 val_acc 48.20 val_mcc 0.026
+  seed 45 epoch 04 loss 0.6983 val_acc 54.01 val_mcc 0.035
+  seed 45 epoch 05 loss 0.6976 val_acc 45.76 val_mcc 0.009
+  seed 45 epoch 06 loss 0.6959 val_acc 54.53 val_mcc 0.024
+  seed 45 epoch 07 loss 0.6944 val_acc 50.33 val_mcc 0.035
+  seed 45 early stop at epoch 7
+[price_only] seed 45 TEST acc 49.62 mcc -0.001 f1 0.214
+  seed 46 epoch 01 loss 0.7192 val_acc 54.41 val_mcc 0.003
+  seed 46 epoch 02 loss 0.7032 val_acc 51.13 val_mcc 0.023
+  seed 46 epoch 03 loss 0.7003 val_acc 49.28 val_mcc 0.031
+  seed 46 epoch 04 loss 0.6989 val_acc 53.91 val_mcc 0.015
+  seed 46 epoch 05 loss 0.6981 val_acc 48.27 val_mcc 0.028
+  seed 46 epoch 06 loss 0.6958 val_acc 50.92 val_mcc 0.032
+  seed 46 epoch 07 loss 0.6955 val_acc 53.68 val_mcc 0.022
+  seed 46 epoch 08 loss 0.6931 val_acc 51.88 val_mcc 0.037
+  seed 46 epoch 09 loss 0.6929 val_acc 50.51 val_mcc 0.036
+  seed 46 epoch 10 loss 0.6904 val_acc 53.41 val_mcc 0.024
+  seed 46 epoch 11 loss 0.6894 val_acc 51.42 val_mcc 0.046
+  seed 46 epoch 12 loss 0.6890 val_acc 47.47 val_mcc 0.019
+  seed 46 epoch 13 loss 0.6878 val_acc 53.38 val_mcc 0.035
+  seed 46 epoch 14 loss 0.6876 val_acc 52.41 val_mcc 0.024
+  seed 46 epoch 15 loss 0.6854 val_acc 52.68 val_mcc 0.032
+  seed 46 epoch 16 loss 0.6857 val_acc 51.65 val_mcc 0.031
+  seed 46 early stop at epoch 16
+[price_only] seed 46 TEST acc 49.94 mcc 0.004 f1 0.314
+
+[price_only] acc 50.32 +/- 0.56 (95% CI 48.79-51.44)
+[price_only] mcc 0.010 +/- 0.009 (95% CI -0.013-0.027)
+[price_only] constant-up floor: acc 50.45
+[price_only] beta gate: mcc 0.012 on agreement days vs 0.005 elsewhere (gap +0.007)
+[price_only] wrote artifacts/results_price_only.json
+
+ablation                    acc                mcc         95% CI (mcc)  beta gap
+----------------------------------------------------------------------------------
+full              50.31 +/- 0.33     0.010 +/- 0.007    -0.006 to 0.035   +0.022
+price_only        50.32 +/- 0.56     0.010 +/- 0.009    -0.013 to 0.027   +0.007
+
+constant-up floor: 50.45% acc, 0.000 mcc (spec 05 R5)
+
+G3 - is the difference from `full` reportable?
+  full vs price_only     NO  - intervals overlap, this is noise
+[  314.0m]     OK: train price_only
+[  314.0m]     | price_only        50.32 +/- 0.56     0.010 +/- 0.009    -0.013 to 0.027   +0.007
+[  314.0m]     | 
+[  314.0m]     | constant-up floor: 50.45% acc, 0.000 mcc (spec 05 R5)
+[  314.0m]     | 
+[  314.0m]     | G3 - is the difference from `full` reportable?
+[  314.0m]     |   full vs price_only     NO  - intervals overlap, this is noise
+[  314.0m] --- train shuffled_text: scripts/run_all.py --config configs/india.yaml --only shuffled_text
+matrix: 1 to run, 0 of 1 already on disk -> ['shuffled_text']
+
+=== [1/1] shuffled_text === (0 min elapsed)
+[shuffled_text] device=cuda overrides=- transform=shuffle_text | train/val/test windows [60240, 10750, 23200]
+  seed 42 epoch 01 loss 0.7209 val_acc 53.60 val_mcc 0.016
+  seed 42 epoch 02 loss 0.7048 val_acc 54.36 val_mcc -0.001
+  seed 42 epoch 03 loss 0.7010 val_acc 50.68 val_mcc 0.022
+  seed 42 epoch 04 loss 0.6987 val_acc 52.07 val_mcc 0.023
+  seed 42 epoch 05 loss 0.6982 val_acc 53.78 val_mcc 0.004
+  seed 42 epoch 06 loss 0.6966 val_acc 48.17 val_mcc 0.022
+  seed 42 epoch 07 loss 0.6954 val_acc 53.05 val_mcc 0.035
+  seed 42 epoch 08 loss 0.6941 val_acc 53.20 val_mcc 0.033
+  seed 42 epoch 09 loss 0.6921 val_acc 46.92 val_mcc 0.021
+  seed 42 epoch 10 loss 0.6912 val_acc 53.13 val_mcc 0.042
+  seed 42 epoch 11 loss 0.6901 val_acc 50.83 val_mcc 0.033
+  seed 42 epoch 12 loss 0.6893 val_acc 52.23 val_mcc 0.037
+  seed 42 epoch 13 loss 0.6874 val_acc 51.44 val_mcc 0.048
+  seed 42 epoch 14 loss 0.6872 val_acc 53.42 val_mcc 0.027
+  seed 42 epoch 15 loss 0.6857 val_acc 51.87 val_mcc 0.025
+  seed 42 epoch 16 loss 0.6847 val_acc 52.92 val_mcc 0.039
+  seed 42 epoch 17 loss 0.6841 val_acc 53.65 val_mcc 0.027
+  seed 42 epoch 18 loss 0.6826 val_acc 50.02 val_mcc 0.022
+  seed 42 early stop at epoch 18
+[shuffled_text] seed 42 TEST acc 50.11 mcc 0.007 f1 0.351
+  seed 43 epoch 01 loss 0.7199 val_acc 53.93 val_mcc 0.025
+  seed 43 epoch 02 loss 0.7033 val_acc 53.10 val_mcc 0.025
+  seed 43 epoch 03 loss 0.7015 val_acc 50.00 val_mcc 0.026
+  seed 43 epoch 04 loss 0.6994 val_acc 46.03 val_mcc 0.009
+  seed 43 epoch 05 loss 0.6977 val_acc 53.93 val_mcc -0.009
+  seed 43 epoch 06 loss 0.6954 val_acc 53.60 val_mcc 0.009
+  seed 43 epoch 07 loss 0.6943 val_acc 46.38 val_mcc 0.007
+  seed 43 epoch 08 loss 0.6931 val_acc 50.46 val_mcc 0.034
+  seed 43 epoch 09 loss 0.6920 val_acc 52.10 val_mcc 0.030
+  seed 43 epoch 10 loss 0.6912 val_acc 49.66 val_mcc 0.035
+  seed 43 epoch 11 loss 0.6902 val_acc 49.92 val_mcc 0.036
+  seed 43 epoch 12 loss 0.6886 val_acc 51.46 val_mcc 0.037
+  seed 43 epoch 13 loss 0.6870 val_acc 51.57 val_mcc 0.020
+  seed 43 epoch 14 loss 0.6862 val_acc 50.44 val_mcc 0.023
+  seed 43 epoch 15 loss 0.6852 val_acc 52.67 val_mcc 0.024
+  seed 43 epoch 16 loss 0.6843 val_acc 51.73 val_mcc 0.022
+  seed 43 epoch 17 loss 0.6842 val_acc 51.00 val_mcc 0.020
+  seed 43 early stop at epoch 17
+[shuffled_text] seed 43 TEST acc 50.23 mcc 0.010 f1 0.355
+  seed 44 epoch 01 loss 0.7232 val_acc 54.41 val_mcc 0.000
+  seed 44 epoch 02 loss 0.7044 val_acc 51.14 val_mcc 0.026
+  seed 44 epoch 03 loss 0.7005 val_acc 54.03 val_mcc 0.027
+  seed 44 epoch 04 loss 0.6981 val_acc 53.76 val_mcc 0.022
+  seed 44 epoch 05 loss 0.6969 val_acc 51.46 val_mcc 0.033
+  seed 44 epoch 06 loss 0.6954 val_acc 51.90 val_mcc 0.019
+  seed 44 epoch 07 loss 0.6949 val_acc 54.31 val_mcc 0.002
+  seed 44 epoch 08 loss 0.6932 val_acc 53.28 val_mcc 0.017
+  seed 44 epoch 09 loss 0.6919 val_acc 51.56 val_mcc 0.035
+  seed 44 epoch 10 loss 0.6910 val_acc 51.87 val_mcc 0.032
+  seed 44 epoch 11 loss 0.6893 val_acc 51.95 val_mcc 0.041
+  seed 44 epoch 12 loss 0.6895 val_acc 52.32 val_mcc 0.042
+  seed 44 epoch 13 loss 0.6885 val_acc 49.59 val_mcc 0.025
+  seed 44 epoch 14 loss 0.6862 val_acc 51.93 val_mcc 0.026
+  seed 44 epoch 15 loss 0.6858 val_acc 51.57 val_mcc 0.033
+  seed 44 epoch 16 loss 0.6854 val_acc 48.11 val_mcc 0.020
+  seed 44 epoch 17 loss 0.6843 val_acc 52.68 val_mcc 0.024
+  seed 44 early stop at epoch 17
+[shuffled_text] seed 44 TEST acc 50.26 mcc 0.010 f1 0.371
+  seed 45 epoch 01 loss 0.7197 val_acc 48.82 val_mcc 0.026
+  seed 45 epoch 02 loss 0.7072 val_acc 50.62 val_mcc 0.035
+  seed 45 epoch 03 loss 0.7007 val_acc 48.20 val_mcc 0.027
+  seed 45 epoch 04 loss 0.6983 val_acc 54.10 val_mcc 0.040
+  seed 45 epoch 05 loss 0.6977 val_acc 45.76 val_mcc 0.006
+  seed 45 epoch 06 loss 0.6956 val_acc 54.65 val_mcc 0.033
+  seed 45 epoch 07 loss 0.6942 val_acc 49.28 val_mcc 0.026
+  seed 45 epoch 08 loss 0.6928 val_acc 50.25 val_mcc 0.031
+  seed 45 epoch 09 loss 0.6924 val_acc 48.49 val_mcc 0.022
+  seed 45 early stop at epoch 9
+[shuffled_text] seed 45 TEST acc 50.08 mcc 0.002 f1 0.488
+  seed 46 epoch 01 loss 0.7192 val_acc 54.41 val_mcc 0.003
+  seed 46 epoch 02 loss 0.7032 val_acc 51.04 val_mcc 0.021
+  seed 46 epoch 03 loss 0.7003 val_acc 48.97 val_mcc 0.027
+  seed 46 epoch 04 loss 0.6989 val_acc 53.93 val_mcc 0.016
+  seed 46 epoch 05 loss 0.6981 val_acc 48.26 val_mcc 0.027
+  seed 46 epoch 06 loss 0.6955 val_acc 51.06 val_mcc 0.040
+  seed 46 epoch 07 loss 0.6956 val_acc 53.72 val_mcc 0.017
+  seed 46 epoch 08 loss 0.6929 val_acc 52.11 val_mcc 0.026
+  seed 46 epoch 09 loss 0.6929 val_acc 50.43 val_mcc 0.027
+  seed 46 epoch 10 loss 0.6905 val_acc 53.27 val_mcc 0.023
+  seed 46 epoch 11 loss 0.6890 val_acc 51.33 val_mcc 0.035
+  seed 46 early stop at epoch 11
+[shuffled_text] seed 46 TEST acc 50.03 mcc 0.008 f1 0.283
+
+[shuffled_text] acc 50.14 +/- 0.10 (95% CI 48.80-51.40)
+[shuffled_text] mcc 0.007 +/- 0.003 (95% CI -0.014-0.027)
+[shuffled_text] constant-up floor: acc 50.45
+[shuffled_text] beta gate: mcc 0.026 on agreement days vs 0.001 elsewhere (gap +0.025)
+[shuffled_text] wrote artifacts/results_shuffled_text.json
+
+ablation                    acc                mcc         95% CI (mcc)  beta gap
+----------------------------------------------------------------------------------
+full              50.31 +/- 0.33     0.010 +/- 0.007    -0.006 to 0.035   +0.022
+price_only        50.32 +/- 0.56     0.010 +/- 0.009    -0.013 to 0.027   +0.007
+shuffled_text     50.14 +/- 0.10     0.007 +/- 0.003    -0.014 to 0.027   +0.025
+
+constant-up floor: 50.45% acc, 0.000 mcc (spec 05 R5)
+
+G3 - is the difference from `full` reportable?
+  full vs price_only     NO  - intervals overlap, this is noise
+  full vs shuffled_text  NO  - intervals overlap, this is noise
+[  499.6m]     OK: train shuffled_text
+[  499.6m]     | 
+[  499.6m]     | constant-up floor: 50.45% acc, 0.000 mcc (spec 05 R5)
+[  499.6m]     | 
+[  499.6m]     | G3 - is the difference from `full` reportable?
+[  499.6m]     |   full vs price_only     NO  - intervals overlap, this is noise
+[  499.6m]     |   full vs shuffled_text  NO  - intervals overlap, this is noise
+[  499.6m] GATE shuffled_text: acc 50.14%, mcc 95% CI [-0.014, 0.027] -> at chance
+[  499.6m] GATE no ablation near 60%
+[  499.6m] --- train concat: scripts/run_all.py --config configs/india.yaml --only concat
+matrix: 1 to run, 0 of 1 already on disk -> ['concat']
+
+=== [1/1] concat === (0 min elapsed)
+[concat] device=cuda overrides={'fusion': 'concat'} transform=- | train/val/test windows [60240, 10750, 23200]
+  seed 42 epoch 01 loss 0.7211 val_acc 47.43 val_mcc 0.014
+  seed 42 epoch 02 loss 0.7053 val_acc 54.44 val_mcc 0.015
+  seed 42 epoch 03 loss 0.7011 val_acc 53.56 val_mcc 0.009
+  seed 42 epoch 04 loss 0.6988 val_acc 54.28 val_mcc -0.006
+  seed 42 epoch 05 loss 0.6971 val_acc 45.70 val_mcc 0.005
+  seed 42 epoch 06 loss 0.6968 val_acc 46.66 val_mcc 0.025
+  seed 42 epoch 07 loss 0.6940 val_acc 52.18 val_mcc 0.040
+  seed 42 epoch 08 loss 0.6921 val_acc 48.12 val_mcc 0.028
+  seed 42 epoch 09 loss 0.6914 val_acc 51.29 val_mcc 0.040
+  seed 42 epoch 10 loss 0.6895 val_acc 53.01 val_mcc 0.041
+  seed 42 epoch 11 loss 0.6875 val_acc 49.90 val_mcc 0.026
+  seed 42 epoch 12 loss 0.6863 val_acc 51.00 val_mcc 0.039
+  seed 42 epoch 13 loss 0.6845 val_acc 50.96 val_mcc 0.038
+  seed 42 epoch 14 loss 0.6837 val_acc 52.58 val_mcc 0.031
+  seed 42 epoch 15 loss 0.6822 val_acc 51.27 val_mcc 0.032
+  seed 42 early stop at epoch 15
+[concat] seed 42 TEST acc 50.50 mcc 0.013 f1 0.436
+  seed 43 epoch 01 loss 0.7237 val_acc 51.32 val_mcc 0.016
+  seed 43 epoch 02 loss 0.7047 val_acc 45.59 val_mcc 0.000
+  seed 43 epoch 03 loss 0.7021 val_acc 52.20 val_mcc 0.041
+  seed 43 epoch 04 loss 0.7006 val_acc 50.76 val_mcc 0.033
+  seed 43 epoch 05 loss 0.6989 val_acc 51.91 val_mcc 0.039
+  seed 43 epoch 06 loss 0.6964 val_acc 45.57 val_mcc -0.008
+  seed 43 epoch 07 loss 0.6950 val_acc 46.17 val_mcc 0.010
+  seed 43 epoch 08 loss 0.6928 val_acc 48.78 val_mcc 0.020
+  seed 43 early stop at epoch 8
+[concat] seed 43 TEST acc 49.74 mcc -0.001 f1 0.340
+  seed 44 epoch 01 loss 0.7230 val_acc 54.41 val_mcc 0.000
+  seed 44 epoch 02 loss 0.7061 val_acc 45.58 val_mcc -0.009
+  seed 44 epoch 03 loss 0.7019 val_acc 51.35 val_mcc 0.026
+  seed 44 epoch 04 loss 0.6995 val_acc 53.93 val_mcc 0.023
+  seed 44 epoch 05 loss 0.6979 val_acc 46.07 val_mcc 0.013
+  seed 44 epoch 06 loss 0.6963 val_acc 53.04 val_mcc 0.037
+  seed 44 epoch 07 loss 0.6956 val_acc 47.14 val_mcc 0.011
+  seed 44 epoch 08 loss 0.6929 val_acc 52.92 val_mcc 0.035
+  seed 44 epoch 09 loss 0.6911 val_acc 52.51 val_mcc 0.032
+  seed 44 epoch 10 loss 0.6898 val_acc 53.02 val_mcc 0.026
+  seed 44 epoch 11 loss 0.6879 val_acc 49.63 val_mcc 0.021
+  seed 44 early stop at epoch 11
+[concat] seed 44 TEST acc 50.78 mcc 0.018 f1 0.439
+  seed 45 epoch 01 loss 0.7223 val_acc 52.87 val_mcc 0.026
+  seed 45 epoch 02 loss 0.7054 val_acc 51.00 val_mcc 0.033
+  seed 45 epoch 03 loss 0.6998 val_acc 49.13 val_mcc 0.026
+  seed 45 epoch 04 loss 0.6990 val_acc 47.34 val_mcc 0.023
+  seed 45 epoch 05 loss 0.6973 val_acc 53.45 val_mcc 0.033
+  seed 45 epoch 06 loss 0.6965 val_acc 53.33 val_mcc 0.040
+  seed 45 epoch 07 loss 0.6940 val_acc 52.71 val_mcc 0.029
+  seed 45 epoch 08 loss 0.6932 val_acc 50.44 val_mcc 0.034
+  seed 45 epoch 09 loss 0.6910 val_acc 50.43 val_mcc 0.039
+  seed 45 epoch 10 loss 0.6894 val_acc 45.96 val_mcc 0.008
+  seed 45 epoch 11 loss 0.6881 val_acc 52.40 val_mcc 0.017
+  seed 45 early stop at epoch 11
+[concat] seed 45 TEST acc 50.77 mcc 0.016 f1 0.502
+  seed 46 epoch 01 loss 0.7199 val_acc 53.40 val_mcc 0.041
+  seed 46 epoch 02 loss 0.7047 val_acc 45.98 val_mcc 0.018
+  seed 46 epoch 03 loss 0.7015 val_acc 45.84 val_mcc 0.010
+  seed 46 epoch 04 loss 0.7004 val_acc 53.18 val_mcc 0.032
+  seed 46 epoch 05 loss 0.6976 val_acc 45.66 val_mcc -0.000
+  seed 46 epoch 06 loss 0.6963 val_acc 53.93 val_mcc 0.014
+  seed 46 early stop at epoch 6
+[concat] seed 46 TEST acc 50.82 mcc 0.018 f1 0.473
+
+[concat] acc 50.52 +/- 0.45 (95% CI 49.58-51.69)
+[concat] mcc 0.013 +/- 0.008 (95% CI -0.004-0.034)
+[concat] constant-up floor: acc 50.45
+[concat] beta gate: mcc 0.044 on agreement days vs 0.006 elsewhere (gap +0.039)
+[concat] wrote artifacts/results_concat.json
+
+ablation                    acc                mcc         95% CI (mcc)  beta gap
+----------------------------------------------------------------------------------
+full              50.31 +/- 0.33     0.010 +/- 0.007    -0.006 to 0.035   +0.022
+price_only        50.32 +/- 0.56     0.010 +/- 0.009    -0.013 to 0.027   +0.007
+shuffled_text     50.14 +/- 0.10     0.007 +/- 0.003    -0.014 to 0.027   +0.025
+concat            50.52 +/- 0.45     0.013 +/- 0.008    -0.004 to 0.034   +0.039
+
+constant-up floor: 50.45% acc, 0.000 mcc (spec 05 R5)
+
+G3 - is the difference from `full` reportable?
+  full vs price_only     NO  - intervals overlap, this is noise
+  full vs shuffled_text  NO  - intervals overlap, this is noise
+  full vs concat         NO  - intervals overlap, this is noise
+[  565.2m]     OK: train concat
+[  565.2m]     | constant-up floor: 50.45% acc, 0.000 mcc (spec 05 R5)
+[  565.2m]     | 
+[  565.2m]     | G3 - is the difference from `full` reportable?
+[  565.2m]     |   full vs price_only     NO  - intervals overlap, this is noise
+[  565.2m]     |   full vs shuffled_text  NO  - intervals overlap, this is noise
+[  565.2m]     |   full vs concat         NO  - intervals overlap, this is noise
+[  565.2m] --- train oneway: scripts/run_all.py --config configs/india.yaml --only oneway
+matrix: 1 to run, 0 of 1 already on disk -> ['oneway']
+
+=== [1/1] oneway === (0 min elapsed)
+[oneway] device=cuda overrides={'fusion': 'oneway'} transform=- | train/val/test windows [60240, 10750, 23200]
+  seed 42 epoch 01 loss 0.7214 val_acc 48.69 val_mcc 0.029
+  seed 42 epoch 02 loss 0.7040 val_acc 54.41 val_mcc 0.000
+  seed 42 epoch 03 loss 0.6999 val_acc 50.43 val_mcc 0.026
+  seed 42 epoch 04 loss 0.6981 val_acc 45.62 val_mcc -0.003
+  seed 42 epoch 05 loss 0.6967 val_acc 52.63 val_mcc 0.023
+  seed 42 epoch 06 loss 0.6953 val_acc 47.80 val_mcc 0.033
+  seed 42 epoch 07 loss 0.6940 val_acc 47.89 val_mcc 0.031
+  seed 42 epoch 08 loss 0.6928 val_acc 53.47 val_mcc 0.036
+  seed 42 epoch 09 loss 0.6909 val_acc 53.53 val_mcc 0.050
+  seed 42 epoch 10 loss 0.6898 val_acc 52.52 val_mcc 0.019
+  seed 42 epoch 11 loss 0.6880 val_acc 52.95 val_mcc 0.033
+  seed 42 epoch 12 loss 0.6865 val_acc 50.50 val_mcc 0.032
+  seed 42 epoch 13 loss 0.6852 val_acc 50.03 val_mcc 0.038
+  seed 42 epoch 14 loss 0.6843 val_acc 52.81 val_mcc 0.026
+  seed 42 early stop at epoch 14
+[oneway] seed 42 TEST acc 50.42 mcc 0.011 f1 0.435
+  seed 43 epoch 01 loss 0.7163 val_acc 45.59 val_mcc 0.000
+  seed 43 epoch 02 loss 0.7006 val_acc 45.75 val_mcc 0.012
+  seed 43 epoch 03 loss 0.6986 val_acc 47.18 val_mcc 0.025
+  seed 43 epoch 04 loss 0.6969 val_acc 53.89 val_mcc -0.006
+  seed 43 epoch 05 loss 0.6958 val_acc 47.73 val_mcc 0.024
+  seed 43 epoch 06 loss 0.6946 val_acc 47.88 val_mcc 0.023
+  seed 43 epoch 07 loss 0.6931 val_acc 49.93 val_mcc 0.034
+  seed 43 epoch 08 loss 0.6916 val_acc 49.27 val_mcc 0.033
+  seed 43 epoch 09 loss 0.6907 val_acc 50.79 val_mcc 0.031
+  seed 43 epoch 10 loss 0.6895 val_acc 48.57 val_mcc 0.021
+  seed 43 epoch 11 loss 0.6876 val_acc 53.70 val_mcc 0.026
+  seed 43 epoch 12 loss 0.6869 val_acc 49.77 val_mcc 0.030
+  seed 43 early stop at epoch 12
+[oneway] seed 43 TEST acc 50.21 mcc 0.016 f1 0.208
+  seed 44 epoch 01 loss 0.7206 val_acc 46.37 val_mcc 0.017
+  seed 44 epoch 02 loss 0.7037 val_acc 53.47 val_mcc 0.009
+  seed 44 epoch 03 loss 0.7003 val_acc 49.46 val_mcc 0.024
+  seed 44 epoch 04 loss 0.6986 val_acc 54.05 val_mcc 0.008
+  seed 44 epoch 05 loss 0.6957 val_acc 52.25 val_mcc 0.021
+  seed 44 epoch 06 loss 0.6947 val_acc 46.77 val_mcc 0.015
+  seed 44 epoch 07 loss 0.6947 val_acc 46.93 val_mcc 0.021
+  seed 44 epoch 08 loss 0.6926 val_acc 52.78 val_mcc 0.033
+  seed 44 epoch 09 loss 0.6910 val_acc 51.24 val_mcc 0.035
+  seed 44 epoch 10 loss 0.6894 val_acc 49.88 val_mcc 0.030
+  seed 44 epoch 11 loss 0.6877 val_acc 49.42 val_mcc 0.026
+  seed 44 epoch 12 loss 0.6867 val_acc 52.39 val_mcc 0.015
+  seed 44 epoch 13 loss 0.6853 val_acc 46.73 val_mcc 0.012
+  seed 44 epoch 14 loss 0.6844 val_acc 52.34 val_mcc 0.022
+  seed 44 early stop at epoch 14
+[oneway] seed 44 TEST acc 49.78 mcc 0.000 f1 0.320
+  seed 45 epoch 01 loss 0.7191 val_acc 46.79 val_mcc 0.003
+  seed 45 epoch 02 loss 0.7027 val_acc 54.25 val_mcc -0.009
+  seed 45 epoch 03 loss 0.6996 val_acc 45.58 val_mcc -0.011
+  seed 45 epoch 04 loss 0.6976 val_acc 49.76 val_mcc 0.030
+  seed 45 epoch 05 loss 0.6960 val_acc 46.92 val_mcc 0.019
+  seed 45 epoch 06 loss 0.6951 val_acc 53.79 val_mcc 0.014
+  seed 45 epoch 07 loss 0.6932 val_acc 53.67 val_mcc 0.015
+  seed 45 epoch 08 loss 0.6920 val_acc 49.36 val_mcc 0.029
+  seed 45 epoch 09 loss 0.6902 val_acc 45.62 val_mcc -0.004
+  seed 45 early stop at epoch 9
+[oneway] seed 45 TEST acc 49.76 mcc 0.004 f1 0.181
+  seed 46 epoch 01 loss 0.7201 val_acc 46.60 val_mcc 0.004
+  seed 46 epoch 02 loss 0.7018 val_acc 45.62 val_mcc 0.004
+  seed 46 epoch 03 loss 0.6987 val_acc 47.48 val_mcc 0.018
+  seed 46 epoch 04 loss 0.6971 val_acc 47.64 val_mcc 0.018
+  seed 46 epoch 05 loss 0.6966 val_acc 50.68 val_mcc 0.025
+  seed 46 epoch 06 loss 0.6947 val_acc 50.01 val_mcc 0.031
+  seed 46 epoch 07 loss 0.6928 val_acc 52.66 val_mcc 0.038
+  seed 46 epoch 08 loss 0.6911 val_acc 47.45 val_mcc 0.029
+  seed 46 epoch 09 loss 0.6897 val_acc 53.40 val_mcc 0.010
+  seed 46 epoch 10 loss 0.6887 val_acc 48.81 val_mcc 0.028
+  seed 46 epoch 11 loss 0.6875 val_acc 51.40 val_mcc 0.046
+  seed 46 epoch 12 loss 0.6860 val_acc 50.15 val_mcc 0.032
+  seed 46 epoch 13 loss 0.6845 val_acc 47.67 val_mcc 0.034
+  seed 46 epoch 14 loss 0.6832 val_acc 47.89 val_mcc 0.020
+  seed 46 epoch 15 loss 0.6828 val_acc 50.84 val_mcc 0.033
+  seed 46 epoch 16 loss 0.6819 val_acc 48.71 val_mcc 0.028
+  seed 46 early stop at epoch 16
+[oneway] seed 46 TEST acc 50.31 mcc 0.013 f1 0.316
+
+[oneway] acc 50.09 +/- 0.31 (95% CI 48.56-51.39)
+[oneway] mcc 0.009 +/- 0.007 (95% CI -0.013-0.025)
+[oneway] constant-up floor: acc 50.45
+[oneway] beta gate: mcc 0.032 on agreement days vs -0.004 elsewhere (gap +0.037)
+[oneway] wrote artifacts/results_oneway.json
+
+ablation                    acc                mcc         95% CI (mcc)  beta gap
+----------------------------------------------------------------------------------
+full              50.31 +/- 0.33     0.010 +/- 0.007    -0.006 to 0.035   +0.022
+price_only        50.32 +/- 0.56     0.010 +/- 0.009    -0.013 to 0.027   +0.007
+shuffled_text     50.14 +/- 0.10     0.007 +/- 0.003    -0.014 to 0.027   +0.025
+concat            50.52 +/- 0.45     0.013 +/- 0.008    -0.004 to 0.034   +0.039
+oneway            50.09 +/- 0.31     0.009 +/- 0.007    -0.013 to 0.025   +0.037
+
+constant-up floor: 50.45% acc, 0.000 mcc (spec 05 R5)
+
+G3 - is the difference from `full` reportable?
+  full vs price_only     NO  - intervals overlap, this is noise
+  full vs shuffled_text  NO  - intervals overlap, this is noise
+  full vs concat         NO  - intervals overlap, this is noise
+  full vs oneway         NO  - intervals overlap, this is noise
+[  653.6m]     OK: train oneway
+[  653.6m]     | 
+[  653.6m]     | G3 - is the difference from `full` reportable?
+[  653.6m]     |   full vs price_only     NO  - intervals overlap, this is noise
+[  653.6m]     |   full vs shuffled_text  NO  - intervals overlap, this is noise
+[  653.6m]     |   full vs concat         NO  - intervals overlap, this is noise
+[  653.6m]     |   full vs oneway         NO  - intervals overlap, this is noise
+[  653.6m] deadline reached; not starting layers2
+[  653.7m] final table:
+[  653.7m]     ablation                    acc                mcc         95% CI (mcc)  beta gap
+[  653.7m]     ----------------------------------------------------------------------------------
+[  653.7m]     full              50.31 +/- 0.33     0.010 +/- 0.007    -0.006 to 0.035   +0.022
+[  653.7m]     price_only        50.32 +/- 0.56     0.010 +/- 0.009    -0.013 to 0.027   +0.007
+[  653.7m]     shuffled_text     50.14 +/- 0.10     0.007 +/- 0.003    -0.014 to 0.027   +0.025
+[  653.7m]     concat            50.52 +/- 0.45     0.013 +/- 0.008    -0.004 to 0.034   +0.039
+[  653.7m]     oneway            50.09 +/- 0.31     0.009 +/- 0.007    -0.013 to 0.025   +0.037
+[  653.7m]     
+[  653.7m]     constant-up floor: 50.45% acc, 0.000 mcc (spec 05 R5)
+[  653.7m]     
+[  653.7m]     G3 - is the difference from `full` reportable?
+[  653.7m]       full vs price_only     NO  - intervals overlap, this is noise
+[  653.7m]       full vs shuffled_text  NO  - intervals overlap, this is noise
+[  653.7m]       full vs concat         NO  - intervals overlap, this is noise
+[  653.7m]       full vs oneway         NO  - intervals overlap, this is noise
+[  653.7m] wrote C:\dev\FinanceProject\artifacts\SESSION_REPORT.md
+[  653.7m] session complete in 10.9h
