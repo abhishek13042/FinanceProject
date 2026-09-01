@@ -1,0 +1,27 @@
+{
+  "title": "FinanceProject — Study Set",
+  "subtitle": "A beginner-level companion to the FinanceProject codebase",
+  "kicker": "Internal documentation",
+  "meta": {
+    "Stack": "Python, PyTorch, yfinance, mT5 (frozen)",
+    "Scope": "src/, specs/00-07, 24 tests (leakage + resume suites)",
+    "Prepared": "September 2026"
+  },
+  "out_dir": "build/pdf",
+  "bundle_name": "financeproject-study-set-complete.pdf",
+  "footer": "FinanceProject — Study Set",
+  "parts": [
+    {
+      "name": "Part I",
+      "subtitle": "Study set — the project from zero",
+      "docs": [
+        "docs/study/INDEX.md",
+        "docs/study/00-how-to-study-this.md",
+        "docs/study/01-concepts-from-zero.md",
+        "docs/study/02-one-request-explained-slowly.md",
+        "docs/study/03-the-data-model-explained-slowly.md",
+        "docs/study/04-results-and-how-to-defend-them.md"
+      ]
+    }
+  ]
+}

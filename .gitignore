@@ -6,3 +6,6 @@ data/interim/
 !data/raw/universe50.csv
 .venv/
 data/raw/*.txt
+
+# PDF build output (generated, not committed)
+build/pdf/
