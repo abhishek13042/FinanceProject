@@ -14,8 +14,11 @@ from src.data.prices import FEATURE_COLS as PRICE_COLS  # 17 channels (6 OHLCV +
 
 
 class StockWindowDataset(Dataset):
-    def __init__(self, prices: pd.DataFrame, emb: dict, seq_len: int, text_dim: int):
-        """prices: cleaned+featurised long frame. emb: {(symbol, date_str): vector}."""
+    def __init__(self, prices: pd.DataFrame, emb: dict, seq_len: int, text_dim: int,
+                 feat_cols: list[str] | None = None):
+        """prices: cleaned+featurised long frame. emb: {(symbol, date_str): vector}.
+        feat_cols: price-stream channels; defaults to the 17 price/TA columns."""
+        feat_cols = list(feat_cols or PRICE_COLS)
         self.L, self.text_dim = seq_len, text_dim
         self.px, self.tx = [], []          # per symbol: (n_days, d_p) and (n_days, text_dim)
         idx, y, dates, syms = [], [], [], []
@@ -25,7 +28,7 @@ class StockWindowDataset(Dataset):
         for si, (sym, g) in enumerate(prices.sort_values("date").groupby("symbol")):
             g = g.reset_index(drop=True)
             ds = g["date"].dt.strftime("%Y-%m-%d").to_numpy()
-            self.px.append(g[PRICE_COLS].to_numpy(np.float32))
+            self.px.append(g[feat_cols].to_numpy(np.float32))
             self.tx.append(np.stack([emb.get((sym, d), zero) for d in ds]).astype(np.float32))
             lab = g["label"].to_numpy(np.int64)
             for r, d in enumerate(ds):

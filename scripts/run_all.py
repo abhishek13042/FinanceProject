@@ -22,7 +22,8 @@ from src.eval import intervals_overlap
 # Deliberate order: the three that decide whether anything else is worth reading come first.
 # If the shuffled-text control does not land at chance, every later row is uninterpretable
 # and the session should stop rather than spend GPU hours on ablations of a broken pipeline.
-ORDER = ["full", "price_only", "shuffled_text", "concat", "oneway", "layers2", "align32", "align64"]
+ORDER = ["full", "price_only", "shuffled_text", "concat", "oneway", "layers2", "align32", "align64",
+         "opt_price_only", "opt_full"]
 
 
 def load_results(out_dir):
@@ -38,12 +39,12 @@ def table(res):
     if not res:
         print("no results yet")
         return
-    print(f"\n{'ablation':<14} {'acc':>16} {'mcc':>18} {'95% CI (mcc)':>20} {'beta gap':>9}")
+    print(f"\n{'ablation':<16} {'acc':>16} {'mcc':>18} {'95% CI (mcc)':>20} {'beta gap':>9}")
     print("-" * 82)
     for tag, r in res.items():
         m, ci = r["test_mean_over_seeds"], r["ci_block_bootstrap_days"]
         gap = r["beta_contamination"].get("mcc_gap")
-        print(f"{tag:<14} {m['acc']['mean']:>8.2f} +/- {m['acc']['std']:<4.2f} "
+        print(f"{tag:<16} {m['acc']['mean']:>8.2f} +/- {m['acc']['std']:<4.2f} "
               f"{m['mcc']['mean']:>9.3f} +/- {m['mcc']['std']:<5.3f} "
               f"{ci['mcc']['lo']:>9.3f} to {ci['mcc']['hi']:<7.3f} "
               f"{'' if gap is None else f'{gap:+.3f}'}")
@@ -60,7 +61,7 @@ def table(res):
                 continue
             ov = intervals_overlap(res["full"]["ci_block_bootstrap_days"],
                                    r["ci_block_bootstrap_days"])
-            print(f"  full vs {tag:<14} {'NO  - intervals overlap, this is noise' if ov else 'yes - intervals are disjoint'}")
+            print(f"  full vs {tag:<16} {'NO  - intervals overlap, this is noise' if ov else 'yes - intervals are disjoint'}")
 
 
 def main():
