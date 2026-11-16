@@ -8,6 +8,7 @@ data:
   news_csv: data/raw/news.csv                # columns: symbol,timestamp,headline,body
   summary_csv: data/interim/daily_summaries.csv
   embed_npz: data/interim/daily_embeddings.npz
+  option_features: data/interim/option_features.csv   # src/data/options.py (opt_* ablations)
   # chronological split (no look-ahead), same 62.5/12.5/25 proportions as the paper
   train_end: "2022-12-31"   # 1,234 days = 62.5% of 1,975 (paper proportions; see spec 05 R1)
   val_end:   "2023-12-31"
@@ -56,7 +57,9 @@ model:
   n_heads: 8
   dropout: 0.2
   activation: "gelu"
-  n_price_feats: 17      # 6 OHLCV-family + 11 technical indicators (paper Table 4)
+  n_price_feats: 17      # 6 OHLCV-family + 11 technical indicators (paper Table 4);
+                         # set from the feature list at load time (33 with use_options)
+  use_options: false     # append the 16 option-chain channels (opt_* ablations)
   text_dim: 768          # mT5-base encoder width
   d_align: 17            # d_a: shared text/price alignment width. 17 == paper (Eq. 1).
                          # Widen (32/64) to relieve the 768->17 squeeze; costs ~d_a/17x

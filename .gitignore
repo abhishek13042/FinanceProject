@@ -24,3 +24,6 @@ data/raw/*.txt
 
 # PDF build output (generated, not committed)
 build/pdf/
+
+# NSE F&O bhavcopy zips (~1 GB, re-downloadable via scripts/collect_options.py)
+data/raw/fo_bhav/

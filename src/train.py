@@ -10,6 +10,8 @@ import numpy as np, pandas as pd, torch, yaml
 from torch.utils.data import DataLoader
 
 from src.data.dataset import StockWindowDataset, chronological_split, load_embeddings
+from src.data.options import OPT_COLS, attach as attach_options
+from src.data.prices import FEATURE_COLS as PRICE_COLS
 from src.eval import (across_seeds, agreement_days, block_bootstrap, constant_up, metrics,
                       split_by_agreement)
 from src.models.model import StockTrendModel
@@ -25,6 +27,10 @@ ABLATIONS = {
     "layers2":       ({"n_layers": 2}, None),
     "align32":       ({"d_align": 32}, None),
     "align64":       ({"d_align": 64}, None),
+    # Option-chain channels appended to the price stream (src/data/options.py). Compare
+    # opt_price_only vs price_only (do options add signal?) and opt_full vs full.
+    "opt_price_only": ({"use_options": True}, "zero_text"),
+    "opt_full":       ({"use_options": True}, None),
 }
 
 
@@ -47,8 +53,16 @@ def build_data(cfg, require_text=True):
         emb = {}
     else:
         emb = load_embeddings(npz, cfg["model"]["text_dim"])
+    cols = list(PRICE_COLS)
+    if cfg["model"].get("use_options"):
+        feats = pd.read_csv(cfg["data"]["option_features"], parse_dates=["date"])
+        prices = attach_options(prices, feats, cfg["data"]["train_end"])
+        cols += OPT_COLS
+        print(f"options: {len(OPT_COLS)} channels, has_opt on {prices['has_opt'].mean():.1%} "
+              f"of stock-days")
+    cfg["model"]["n_price_feats"] = len(cols)
     L, td = cfg["model"]["seq_len"], cfg["model"]["text_dim"]
-    splits = [StockWindowDataset(d, emb, L, td) for d in chronological_split(prices, cfg)]
+    splits = [StockWindowDataset(d, emb, L, td, cols) for d in chronological_split(prices, cfg)]
     return prices, splits
 
 
